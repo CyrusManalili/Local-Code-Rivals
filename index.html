@@ -1,11 +1,12 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
+<meta charset="utf-8"/>
 <title>Code Rivals - C++ Challenge</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
 <!-- Removed Socket.IO script as no backend is being used for this local-only version -->
 <style>
     /* General Body and Font Styles */
@@ -463,6 +464,19 @@
         display: block; /* Always display in single lobby view */
     }
 
+    #matchingUpMessage {
+        font-size: 1.2em;
+        color: yellow;
+        margin-top: 10px;
+        display: none; /* Hidden by default */
+        animation: pulse 1.5s infinite alternate;
+    }
+
+    @keyframes pulse {
+        from { opacity: 0.7; transform: scale(1); }
+        to { opacity: 1; transform: scale(1.05); }
+    }
+
     .player-status {
         font-size: 0.9em;
         font-weight: bold;
@@ -540,14 +554,21 @@
 
     .player {
         position: absolute;
-        width: 100px;
+        /* Adjusted player size for better visibility of multiple players */
+        width: 80px;
+        height: 80px; /* Added height for consistent sizing */
         text-align: center;
-        transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%); /* Centers the player div around its top/left point */
+        display: flex; /* Use flex for internal centering */
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
     }
 
     .player .name {
         font-weight: bold;
-        font-size: 16px;
+        font-size: 14px; /* Slightly smaller font for names */
+        word-break: break-word; /* Allow long names to wrap */
     }
 
     .player .name.active {
@@ -566,7 +587,7 @@
     }
 
     .player .lives {
-        font-size: 12px;
+        font-size: 10px; /* Slightly smaller font for lives */
     }
 
     #timer {
@@ -580,19 +601,21 @@
 
     /* Common question box style */
     .question-box {
-        position: absolute;
-        bottom: 30px;
-        left: 50%;
-        transform: translateX(-50%);
+        /* Removed absolute positioning */
+        /* position: absolute; */
+        /* bottom: 30px; */
+        /* left: 50%; */
+        /* transform: translateX(-50%); */
         background-color: rgba(0,0,50,0.7);
         padding: 20px;
         border: 2px solid #00ccff;
         border-radius: 10px;
         box-shadow: 0 0 10px #00ccff;
-        width: 90%;
-        max-width: 700px;
+        width: 90%; /* Adjusted width to match game-container */
+        max-width: 900px; /* Adjusted max-width to match game-container */
         text-align: center;
         box-sizing: border-box;
+        margin-top: 20px; /* Added margin to separate from game container */
     }
 
     .question-box input[type="text"] {
@@ -679,9 +702,9 @@
     /* Layout for 4v4 Q&A */
     #four-v-four-qna-layout {
         display: none; /* Managed by JS */
-        flex-direction: column;
+        flex-direction: column; /* Changed to column to stack game-area and question-box */
         align-items: center;
-        gap: 20px;
+        gap: 20px; /* Gap between game-area and question-box */
         width: 100%;
         flex-grow: 1;
     }
@@ -825,6 +848,13 @@
         min-height: 150px;
     }
 
+    .chat-box-layout .chat-input-area {
+        display: flex;
+        gap: 5px;
+        padding-top: 5px; /* Add padding to separate from sticker panel */
+        flex-wrap: wrap; /* Allow buttons to wrap */
+    }
+
     .chat-box-layout input[type="text"] {
         padding: 8px;
         font-size: 14px;
@@ -834,6 +864,7 @@
         border-radius: 5px;
         width: calc(100% - 16px);
         margin-bottom: 5px;
+        flex-grow: 1; /* Allow input to grow */
     }
 
     .chat-box-layout button {
@@ -845,8 +876,9 @@
         cursor: pointer;
         box-shadow: 0 0 10px #00ccff;
         border-radius: 5px;
-        width: 100%;
+        width: auto; /* Allow buttons to size to content */
         transition: background-color 0.2s, box-shadow 0.2s;
+        flex-shrink: 0; /* Prevent buttons from shrinking */
     }
     .chat-box-layout button:hover {
         background-color: #003f6f;
@@ -1605,12 +1637,12 @@
             width: calc(100% - 60px);
         }
         .player {
-            width: 80px;
-            height: 80px;
-            font-size: 10px;
+            width: 70px; /* Further reduced for very small screens */
+            height: 70px;
+            font-size: 9px;
         }
-        .player .name { font-size: 14px; }
-        .player .lives { font-size: 10px; }
+        .player .name { font-size: 12px; }
+        .player .lives { font-size: 9px; }
         #timer { font-size: 36px; }
         #leaderboard, #globalLeaderboard {
             width: 98%;
@@ -1652,432 +1684,456 @@
         font-size: 16px;
         box-sizing: border-box;
     }
+
+    /* Sticker panel and chat message styles */
+    .sticker-panel {
+        display: none; /* Hidden by default */
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 8px;
+        border: 1px solid rgba(0, 204, 255, 0.3);
+        border-radius: 5px;
+        background-color: rgba(0, 0, 0, 0.3);
+        margin-bottom: 10px;
+        max-height: 150px;
+        overflow-y: auto;
+    }
+
+    .sticker-panel img {
+        width: 60px;
+        height: 60px;
+        object-fit: contain;
+        cursor: pointer;
+        border: 2px solid #00ccff;
+        border-radius: 8px;
+        transition: transform 0.1s, box-shadow 0.1s;
+    }
+
+    .sticker-panel img:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 10px #00ff00;
+    }
+
+    .chat-message {
+        margin-bottom: 5px;
+        line-height: 1.4;
+    }
+
+    .chat-message img.sticker {
+        max-width: 120px; /* Max width for displayed stickers/images */
+        height: auto;
+        border-radius: 8px;
+        border: 1px solid #00ccff;
+        display: block; /* Ensure image takes its own line */
+        margin-top: 5px;
+    }
 </style>
 </head>
 <body>
 <h1>Code Rivals</h1>
-
-<button id="logoutBtn" class="primary-btn">Logout</button>
+<button class="primary-btn" id="logoutBtn">Logout</button>
 <div id="welcomeMessage"></div>
-
 <!-- Profile Icon -->
-<div id="profileIcon" class="top-right-icon" onclick="showProfilePage()">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-    </svg>
+<div class="top-right-icon" id="profileIcon" onclick="showProfilePage()">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path>
+</svg>
 </div>
-
 <!-- New Inventory Icon/Button -->
-<div id="inventoryIcon" class="top-right-icon" onclick="showInventory()">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6-2h-4v2h4V4zm6 15H4V8h16v11zM9 18c0 .55-.45 1-1 1s-1-.45-1-1V12c0-.55.45-1 1-1s1 .45 1 1v6zm4 0c0 .55-.45 1-1 1s-1-.45-1-1V12c0-.55.45-1 1-1s1 .45 1 1v6zm4 0c0 .55-.45 1-1 1s-1-.45-1-1V12c0-.55.45-1 1-1s1 .45 1 1v6z"/>
-    </svg>
+<div class="top-right-icon" id="inventoryIcon" onclick="showInventory()">
+<svg fill="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6-2h-4v2h4V4zm6 15H4V8h16v11zM9 18c0 .55-.45 1-1 1s-1-.45-1-1V12c0-.55.45-1 1-1s1 .45 1 1v6zm4 0c0 .55-.45 1-1 1s-1-.45-1-1V12c0-.55.45-1 1-1s1 .45 1 1v6zm4 0c0 .55-.45 1-1 1s-1-.45-1-1V12c0-.55.45-1 1-1s1 .45 1 1v6z"></path>
+</svg>
 </div>
-
 <!-- New Shop Icon/Button -->
-<div id="shopIcon" class="top-right-icon" onclick="showShop()">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2zm-8.7-5.9l.6-3.9h9.1l1.8 3.8-11.2-.5zM17 9c-.75 0-1.42.34-1.87.87L13 14.5V10H7V6H4V4h3c.55 0 1-.45 1-1s-.45-1-1-1H4c-1.1 0-2 .9-2 2v1.5l.5 1H2v11c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9h-5z"/>
-    </svg>
+<div class="top-right-icon" id="shopIcon" onclick="showShop()">
+<svg fill="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2zm-8.7-5.9l.6-3.9h9.1l1.8 3.8-11.2-.5zM17 9c-.75 0-1.42.34-1.87.87L13 14.5V10H7V6H4V4h3c.55 0 1-.45 1-1s-.45-1-1-1H4c-1.1 0-2 .9-2 2v1.5l.5 1H2v11c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9h-5z"></path>
+</svg>
 </div>
-
 <!-- New Code Input Icon/Button -->
-<div id="codeInputIcon" class="top-right-icon" onclick="showCodeInputModal()">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/>
-    </svg>
+<div class="top-right-icon" id="codeInputIcon" onclick="showCodeInputModal()">
+<svg fill="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"></path>
+</svg>
 </div>
-
 <div id="authContainer">
-    <h2 id="authTitle">Login</h2>
-    <input type="text" id="usernameInput" placeholder="Username" autocomplete="username">
-    <input type="password" id="passwordInput" placeholder="Password" autocomplete="current-password">
-    <button id="authSubmitBtn" class="primary-btn">Login</button>
-    <div id="authSwitch">Don't have an account? Sign Up</div>
+<h2 id="authTitle">Login</h2>
+<input autocomplete="username" id="usernameInput" placeholder="Username" type="text"/>
+<input autocomplete="current-password" id="passwordInput" placeholder="Password" type="password"/>
+<button class="primary-btn" id="authSubmitBtn">Login</button>
+<div id="authSwitch">Don't have an account? Sign Up</div>
 </div>
-
 <!-- Main Lobby Dashboard (New Section) -->
 <div id="mainLobbyDashboard">
-    <div class="main-panel left-panel-modes">
-        <h2>Game Modes</h2>
-        <button id="casualModeBtn" class="primary-btn">Casual</button>
-        <button id="rankedModeBtn" class="primary-btn">Ranked</button>
-        <button id="customModeBtn" class="primary-btn">Custom</button>
-        <!-- Inventory and Shop buttons moved to top right icons -->
-    </div>
-
-    <div class="main-panel center-panel-leaderboard">
-        <div id="globalLeaderboard">
-            <h2>Global Leaderboard</h2>
-            <table>
-                <thead><tr><th>Rank</th><th>Player</th><th>ELO</th><th>Accuracy</th></tr></thead>
-                <tbody id="globalLeaderboardBody"></tbody>
-            </table>
-        </div>
-    </div>
-
-    <div class="main-panel right-panel-updates"> <!-- Renamed class -->
-        <h3>Update Logs</h3>
-        <ul id="updates">
-            <li>v0.1 - Initial release</li>
-            <li>v0.2 - Lobby and Login separation</li>
-            <li>v0.3 - Persistent leaderboard (local file system)</li>
-            <li>v0.4 - Video background added</li>
-            <li>v0.5 - Consolidated frontend logic</li>
-            <li>v0.6 - Client-side login/signup, in-memory lobbies</li>
-            <li>v0.7 - Hidden ranked lobbies with mode selection</li>
-            <li>v0.8 - Direct entry to ranked lobbies, all players visible in-game, auto ready-up for ranked.</li>
-            <li>v0.9 - Inventory, Shop, and Token system added. ELO system adjusted.</li>
-            <li>v1.0 - Inventory and Shop moved to top icons.</li>
-            <li>v1.1 - Added Code Input feature for tokens.</li>
-            <li>v1.2 - Styled Code Input and ensured Inventory updates.</li>
-            <li>v1.3 - Debugged "Failed to fetch" error for local-only operation.</li>
-            <li>v1.4 - Added Profile page, casual points, shop categories, bot accuracy logic.</li>
-            <li>v1.5 - Implemented Custom Mode with Frenzy Mode, Ability Cards, and adjustable timers.</li>
-            <li>v1.6 - Frenzy mode players start with 3 cards. Profile rank added based on accuracy.</li>
-            <li>v1.7 - Integrated Gemini API for solo challenge code evaluation.</li>
-        </ul>
-    </div>
+<div class="main-panel left-panel-modes">
+<h2>Game Modes</h2>
+<button class="primary-btn" id="casualModeBtn">Casual</button>
+<button class="primary-btn" id="rankedModeBtn">Ranked</button>
+<button class="primary-btn" id="customModeBtn">Custom</button>
+<!-- Inventory and Shop buttons moved to top right icons -->
 </div>
-
-
+<div class="main-panel center-panel-leaderboard">
+<div id="globalLeaderboard">
+<h2>Global Leaderboard</h2>
+<table>
+<thead><tr><th>Rank</th><th>Player</th><th>ELO</th><th>Accuracy</th></tr></thead>
+<tbody id="globalLeaderboardBody"></tbody>
+</table>
+</div>
+</div>
+<div class="main-panel right-panel-updates"> <!-- Renamed class -->
+<h3>Update Logs</h3>
+<ul id="updates">
+<li>v0.1 - Initial release</li>
+<li>v0.2 - Lobby and Login separation</li>
+<li>v0.3 - Persistent leaderboard (local file system)</li>
+<li>v0.4 - Video background added</li>
+<li>v0.5 - Consolidated frontend logic</li>
+<li>v0.6 - Client-side login/signup, in-memory lobbies</li>
+<li>v0.7 - Hidden ranked lobbies with mode selection</li>
+<li>v0.8 - Direct entry to ranked lobbies, all players visible in-game, auto ready-up for ranked.</li>
+<li>v0.9 - Inventory, Shop, and Token system added. ELO system adjusted.</li>
+<li>v1.0 - Inventory and Shop moved to top icons.</li>
+<li>v1.1 - Added Code Input feature for tokens.</li>
+<li>v1.2 - Styled Code Input and ensured Inventory updates.</li>
+<li>v1.3 - Debugged "Failed to fetch" error for local-only operation.</li>
+<li>v1.4 - Added Profile page, casual points, shop categories, bot accuracy logic.</li>
+<li>v1.5 - Implemented Custom Mode with Frenzy Mode, Ability Cards, and adjustable timers.</li>
+<li>v1.6 - Players start with cards in Frenzy Mode. Leaderboard displays C Points for casual/custom.</li>
+<li>v1.7 - Fixed token earning on premature exit and improved 4v4 player display.</li>
+<li>v1.8 - Adjusted 4v4 player positioning to avoid overlap with question area.</li>
+<li>v1.9 - Moved 4v4 Q&amp;A input area outside the game container for cleaner layout.</li>
+<li>v2.0 - Integrated Gemini API for Solo Coding Challenge evaluation.</li>
+<li>v2.1 - Added Gemini AI accuracy check for solo mode and inactivity penalty system.</li>
+<li>v2.2 - Staggered bot joining in lobbies with "Matching Up..." animation.</li>
+<li>v2.3 - Added sticker/image sending and profanity filter to in-game chat.</li>
+</ul>
+</div>
+</div>
 <div id="gameModeSelection">
-    <h2>Choose Your Casual Game Mode</h2>
-    <div class="game-mode-box" id="four-v-four-qna-mode">
-        <h3>Free for All Q&A</h3>
-        <p>Compete with up to 4 players in a fast-paced Q&A challenge.</p>
-    </div>
-    <div class="game-mode-box" id="one-v-one-fill-in-blanks-mode">
-        <h3>1v1 Fill in the Blanks</h3>
-        <p>A head-to-head battle, filling in missing code for C++ beginners.</p>
-    </div>
-    <div class="game-mode-box" id="solo-coding-challenge-mode">
-        <h3>Solo Coding Challenge</h3>
-        <p>Improve your skills by solving C++ problems, evaluated by AI.</p>
-    </div>
-    <button class="back-to-dashboard-btn primary-btn">Back to Dashboard</button>
+<h2>Choose Your Casual Game Mode</h2>
+<div class="game-mode-box" id="four-v-four-qna-mode">
+<h3>Free for All Q&amp;A</h3>
+<p>Compete with up to 4 players in a fast-paced Q&amp;A challenge.</p>
 </div>
-
+<div class="game-mode-box" id="one-v-one-fill-in-blanks-mode">
+<h3>1v1 Fill in the Blanks</h3>
+<p>A head-to-head battle, filling in missing code for C++ beginners.</p>
+</div>
+<div class="game-mode-box" id="solo-coding-challenge-mode">
+<h3>Solo Coding Challenge</h3>
+<p>Improve your skills by solving C++ problems, evaluated by AI.</p>
+</div>
+<button class="back-to-dashboard-btn primary-btn">Back to Dashboard</button>
+</div>
 <!-- New Ranked Game Mode Selection -->
 <div id="rankedGameModeSelection">
-    <h2>Choose Your Ranked Game Mode</h2>
-    <div class="game-mode-box" id="ranked-four-v-four-qna-mode">
-        <h3>Ranked Free for All Q&A</h3>
-        <p>Compete in a ranked 4-player Q&A match to climb the leaderboard.</p>
-    </div>
-    <div class="game-mode-box" id="ranked-one-v-one-fill-in-blanks-mode">
-        <h3>Ranked 1v1 Fill in the Blanks</h3>
-        <p>A ranked head-to-head battle, filling in missing code for ELO.</p>
-    </div>
-    <button class="back-to-dashboard-btn primary-btn">Back to Dashboard</button>
+<h2>Choose Your Ranked Game Mode</h2>
+<div class="game-mode-box" id="ranked-four-v-four-qna-mode">
+<h3>Ranked Free for All Q&amp;A</h3>
+<p>Compete in a ranked 4-player Q&amp;A match to climb the leaderboard.</p>
 </div>
-
+<div class="game-mode-box" id="ranked-one-v-one-fill-in-blanks-mode">
+<h3>Ranked 1v1 Fill in the Blanks</h3>
+<p>A ranked head-to-head battle, filling in missing code for ELO.</p>
+</div>
+<button class="back-to-dashboard-btn primary-btn">Back to Dashboard</button>
+</div>
 <!-- Profile Page -->
-<div id="profilePage" class="game-section-container">
-    <button class="back-to-dashboard-btn primary-btn" style="align-self: flex-start; margin-bottom: 20px;">Back to Dashboard</button>
-    <div id="profileHeader">
-        <div id="profileAvatar">
-            <!-- User's first initial or custom avatar -->
-            <span id="profileAvatarText">U</span>
-        </div>
-        <h2 id="profileUsernameDisplay">PlayerName</h2>
-    </div>
-
-    <div id="profileStatsGrid">
-        <div class="stat-item">
-            <h4>Ranked ELO</h4>
-            <p id="profileRankedElo">0</p>
-        </div>
-        <div class="stat-item">
-            <h4>Rank</h4>
-            <p id="profileRankDisplay">D</p> <!-- New element for rank display -->
-        </div>
-        <div class="stat-item">
-            <h4>Casual Points</h4>
-            <p id="profileCasualPoints">0</p>
-        </div>
-        <div class="stat-item">
-            <h4>Ranked Accuracy</h4>
-            <p id="profileRankedAccuracy">0%</p>
-        </div>
-        <div class="stat-item">
-            <h4>Casual Accuracy</h4>
-            <p id="profileCasualAccuracy">0%</p>
-        </div>
-        <div class="stat-item">
-            <h4>Solo Stages Cleared</h4>
-            <p id="profileSoloStages">0</p>
-        </div>
-        <div class="stat-item">
-            <h4>Tokens</h4>
-            <p id="profileTokens">0</p>
-        </div>
-    </div>
-
-    <div id="profileSections">
-        <div id="profileTitles" class="profile-section-box">
-            <h3>Titles</h3>
-            <p id="profileEquippedTitle">No Title Equipped</p>
-            <!-- List of owned titles could go here -->
-        </div>
-        <div id="profileAchievements" class="profile-section-box">
-            <h3>Achievements</h3>
-            <ul>
-                <li>First Win</li>
-                <li>5 Wins</li>
-                <li>10 Wins</li>
-                <li>Master Debugger (Solo Stage 5)</li>
-                <li>Code Rival (ELO 1500)</li>
-                <!-- More achievements can be added dynamically -->
-            </ul>
-        </div>
-        <div id="profileInventoryList" class="profile-section-box">
-            <h3>Owned Cosmetics</h3>
-            <ul>
-                <!-- Owned cosmetic items will be listed here -->
-            </ul>
-        </div>
-    </div>
+<div class="game-section-container" id="profilePage">
+<button class="back-to-dashboard-btn primary-btn" style="align-self: flex-start; margin-bottom: 20px;">Back to Dashboard</button>
+<div id="profileHeader">
+<div id="profileAvatar">
+<!-- User's first initial or custom avatar -->
+<span id="profileAvatarText">U</span>
 </div>
-
+<h2 id="profileUsernameDisplay">PlayerName</h2>
+</div>
+<div id="profileStatsGrid">
+<div class="stat-item">
+<h4>Ranked ELO</h4>
+<p id="profileRankedElo">0</p>
+</div>
+<div class="stat-item">
+<h4>Casual Points</h4>
+<p id="profileCasualPoints">0</p>
+</div>
+<div class="stat-item">
+<h4>Ranked Accuracy</h4>
+<p id="profileRankedAccuracy">0%</p>
+</div>
+<div class="stat-item">
+<h4>Casual Accuracy</h4>
+<p id="profileCasualAccuracy">0%</p>
+</div>
+<div class="stat-item">
+<h4>Solo Stages Cleared</h4>
+<p id="profileSoloStages">0</p>
+</div>
+<div class="stat-item">
+<h4>Solo Avg. Accuracy</h4>
+<p id="profileSoloAvgAccuracy">0%</p>
+</div>
+<div class="stat-item">
+<h4>Tokens</h4>
+<p id="profileTokens">0</p>
+</div>
+</div>
+<div id="profileSections">
+<div class="profile-section-box" id="profileTitles">
+<h3>Titles</h3>
+<p id="profileEquippedTitle">No Title Equipped</p>
+<!-- List of owned titles could go here -->
+</div>
+<div class="profile-section-box" id="profileAchievements">
+<h3>Achievements</h3>
+<ul>
+<li>First Win</li>
+<li>5 Wins</li>
+<li>10 Wins</li>
+<li>Master Debugger (Solo Stage 5)</li>
+<li>Code Rival (ELO 1500)</li>
+<!-- More achievements can be added dynamically -->
+</ul>
+</div>
+<div class="profile-section-box" id="profileInventoryList">
+<h3>Owned Cosmetics</h3>
+<ul>
+<!-- Owned cosmetic items will be listed here -->
+</ul>
+</div>
+</div>
+</div>
 <!-- Inventory Container -->
-<div id="inventoryContainer" class="game-section-container">
-    <h2>Your Inventory</h2>
-    <p id="inventoryTokenDisplay">Tokens: <span id="inventoryCurrentTokens">0</span></p>
-    <div id="inventoryGrid" class="item-grid">
-        <!-- Inventory items will be dynamically loaded here -->
-        <p style="color: #ccc; text-align: center; width: 100%;">No items in your inventory yet!</p>
-    </div>
-    <button class="back-to-dashboard-btn primary-btn" style="margin-top: 20px;">Back to Dashboard</button>
+<div class="game-section-container" id="inventoryContainer">
+<h2>Your Inventory</h2>
+<p id="inventoryTokenDisplay">Tokens: <span id="inventoryCurrentTokens">0</span></p>
+<div class="item-grid" id="inventoryGrid">
+<!-- Inventory items will be dynamically loaded here -->
+<p style="color: #ccc; text-align: center; width: 100%;">No items in your inventory yet!</p>
 </div>
-
+<button class="back-to-dashboard-btn primary-btn" style="margin-top: 20px;">Back to Dashboard</button>
+</div>
 <!-- Shop Container -->
-<div id="shopContainer" class="game-section-container">
-    <h2>Code Rivals Store</h2>
-    <p id="shopTokenDisplay">Your Tokens: <span id="shopCurrentTokens">0</span></p>
-    <div class="shop-category-buttons">
-        <button class="primary-btn active" data-category="all">All</button>
-        <button class="primary-btn" data-category="skin">Skins</button>
-        <button class="primary-btn" data-category="emote">Emotes</button>
-        <button class="primary-btn" data-category="icon">Icons</button>
-        <button class="primary-btn" data-category="title">Titles</button>
-        <button class="primary-btn" data-category="utility">Utility</button>
-    </div>
-    <div id="shopGrid" class="item-grid">
-        <!-- Shop items will be dynamically loaded here -->
-    </div>
-    <button class="back-to-dashboard-btn primary-btn" style="margin-top: 20px;">Back to Dashboard</button>
+<div class="game-section-container" id="shopContainer">
+<h2>Code Rivals Store</h2>
+<p id="shopTokenDisplay">Your Tokens: <span id="shopCurrentTokens">0</span></p>
+<div class="shop-category-buttons">
+<button class="primary-btn active" data-category="all">All</button>
+<button class="primary-btn" data-category="skin">Skins</button>
+<button class="primary-btn" data-category="emote">Emotes</button>
+<button class="primary-btn" data-category="icon">Icons</button>
+<button class="primary-btn" data-category="title">Titles</button>
+<button class="primary-btn" data-category="utility">Utility</button>
 </div>
-
-
+<div class="item-grid" id="shopGrid">
+<!-- Shop items will be dynamically loaded here -->
+</div>
+<button class="back-to-dashboard-btn primary-btn" style="margin-top: 20px;">Back to Dashboard</button>
+</div>
 <!-- Lobby List Container -->
-<div id="lobbyListContainer" class="lobby-list-container">
-    <div class="lobby-header">
-        <button class="back-to-mode-selection-btn primary-btn">Back to Mode Select</button>
-        <h2 id="lobbyListTitle">Available Lobbies</h2>
-        <button class="primary-btn" id="createNewLobbyBtn">Create New Lobby</button>
-    </div>
-    <div id="lobbiesGrid" class="lobby-grid">
-        <!-- Lobbies will be dynamically loaded here -->
-    </div>
+<div class="lobby-list-container" id="lobbyListContainer">
+<div class="lobby-header">
+<button class="back-to-mode-selection-btn primary-btn">Back to Mode Select</button>
+<h2 id="lobbyListTitle">Available Lobbies</h2>
+<button class="primary-btn" id="createNewLobbyBtn">Create New Lobby</button>
 </div>
-
+<div class="lobby-grid" id="lobbiesGrid">
+<!-- Lobbies will be dynamically loaded here -->
+</div>
+</div>
 <!-- Single Lobby View -->
-<div id="singleLobbyView" class="lobby-list-container">
-    <div class="lobby-header">
-        <button class="back-to-lobbies-btn primary-btn">Leave Lobby</button>
-        <h2 id="currentLobbyTitle"></h2>
-        <button id="readyToggleBtn" class="primary-btn">Ready Up!</button>
-    </div>
-    <p id="currentLobbyInfo">Lobby ID: <span id="displayLobbyId"></span> | Players: <span id="displayPlayerCount">0</span>/<span id="displayMaxPlayers">0</span> | Status: <span id="displayLobbyStatus"></span></p>
-    <div id="lobbyPlayersDisplay" class="lobby-grid">
-        <!-- Players in the current lobby will be displayed here -->
-    </div>
-    <button id="startGameButton" class="primary-btn" disabled>Start Game</button>
+<div class="lobby-list-container" id="singleLobbyView">
+<div class="lobby-header">
+<button class="back-to-lobbies-btn primary-btn">Leave Lobby</button>
+<h2 id="currentLobbyTitle"></h2>
+<button class="primary-btn" id="readyToggleBtn">Ready Up!</button>
 </div>
-
-
+<p id="currentLobbyInfo">Lobby ID: <span id="displayLobbyId"></span> | Players: <span id="displayPlayerCount">0</span>/<span id="displayMaxPlayers">0</span> | Status: <span id="displayLobbyStatus"></span></p>
+<p id="matchingUpMessage">Matching Up...</p> <!-- New element for matching up message -->
+<div class="lobby-grid" id="lobbyPlayersDisplay">
+<!-- Players in the current lobby will be displayed here -->
+</div>
+<button class="primary-btn" disabled="" id="startGameButton">Start Game</button>
+</div>
 <div class="main-content-wrapper">
-    <div id="gameUI">
-        <!-- Layout specific to 4v4 Q&A -->
-        <div id="four-v-four-qna-layout">
-            <div class="multiplayer-game-area"> <!-- New wrapper div -->
-                <div class="game-container">
-                    <button id="backToLobbyBtn4v4" class="primary-btn">Back to Lobbies</button>
-                    <div class="player-circle" id="playerCircle"></div>
-                    <div id="timer">30</div>
-                    <div id="questionBox4v4" class="question-box">
-                        <p id="question4v4">Loading...</p>
-                        <input type="text" id="answerInput4v4" placeholder="Your answer here" />
-                        <button id="submitAnswerBtn4v4">Submit</button>
-                    </div>
-                </div>
-                <div id="chatBox4v4" class="chat-box-layout">
-                    <h3>Lobby Chat</h3>
-                    <div id="chatMessages4v4" class="chat-messages"></div>
-                    <input type="text" id="chatInput4v4" placeholder="Type your message..." />
-                    <button id="sendChatBtn4v4">Send</button>
-                </div>
-            </div>
-            <!-- Player cards container for 4v4 -->
-            <div id="playerCardsContainer4v4" class="player-cards-container">
-                <!-- Cards will be rendered here -->
-            </div>
-            <!-- Ranking Area (common for multiplayer) -->
-            <div class="ranking-area">
-                <div id="leaderboard">
-                    <h2>Current Round Leaderboard</h2>
-                    <table>
-                        <thead><tr><th>Rank</th><th>Player</th><th>ELO</th><th>Accuracy</th></tr></thead>
-                        <tbody id="leaderboardBody"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- Layout specific to 1v1 Fill-in-the-Blanks -->
-        <div id="one-v-one-fill-in-blanks-layout">
-            <button id="backToLobbyBtn1v1" class="primary-btn">Back to Lobbies</button>
-            <div class="side-by-side-game-area">
-                <div class="player-panels-wrapper"> <!-- New wrapper for player panels -->
-                    <div class="player-panel" id="player1-panel">
-                        <h3 class="player-panel-name"><span id="player1-name"></span> <span id="player1-you-tag"></span></h3>
-                        <p>Lives: <span id="player1-lives"></span></p>
-                        <p>Ranked ELO: <span id="player1-elo"></span></p>
-                        <p>Casual Points: <span id="player1-points"></span></p>
-                        <div id="questionBox1v1Player1" class="question-box-1v1">
-                             <p id="question1v1Player1"></p>
-                             <input type="text" id="answerInput1v1Player1" placeholder="Your answer here" />
-                             <button id="submitAnswerBtn1v1Player1">Submit</button>
-                        </div>
-                    </div>
-                    <div class="player-panel" id="player2-panel">
-                        <h3 class="player-panel-name"><span id="player2-name"></span> <span id="player2-you-tag"></span></h3>
-                        <p>Lives: <span id="player2-lives"></span></p>
-                        <p>Ranked ELO: <span id="player2-elo"></span></p>
-                        <p>Casual Points: <span id="player2-points"></span></p>
-                        <div id="questionBox1v1Player2" class="question-box-1v1">
-                             <p id="question1v1Player2"></p>
-                             <input type="text" id="answerInput1v1Player2" placeholder="Your answer here" />
-                             <button id="submitAnswerBtn1v1Player2">Submit</button>
-                        </div>
-                    </div>
-                </div>
-                <div id="chatBox1v1" class="chat-box-layout middle-chat-divider">
-                    <h3>Lobby Chat</h3>
-                    <div id="chatMessages1v1" class="chat-messages"></div>
-                    <input type="text" id="chatInput1v1" placeholder="Type your message..." />
-                    <button id="sendChatBtn1v1">Send</button>
-                </div>
-            </div>
-            <!-- Player cards container for 1v1 -->
-            <div id="playerCardsContainer1v1" class="player-cards-container">
-                <!-- Cards will be rendered here -->
-            </div>
-            <!-- Ranking Area (common for multiplayer) -->
-            <div class="ranking-area">
-                <div id="leaderboard">
-                    <h2>Current Round Leaderboard</h2>
-                    <table>
-                        <thead><tr><th>Rank</th><th>Player</th><th>ELO</th><th>Accuracy</th></tr></thead>
-                        <tbody id="leaderboardBody"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div class="replay-button" id="replayButton">
-            <button class="primary-btn">Replay</button>
-        </div>
-    </div>
-
-    <!-- Solo Challenge UI -->
-    <div id="soloChallengeUI">
-        <button id="soloBackToLobbyBtn" class="primary-btn">Back to Mode Select</button>
-        <h2>Solo Coding Challenge - Stage <span id="soloCurrentStage">1</span></h2>
-        <div id="soloProblemDescription"></div>
-        <textarea id="soloCodeEditor" placeholder="Write your C++ code here..."></textarea>
-        <div id="soloChallengeButtons">
-            <button id="soloPrevStageBtn" class="primary-btn" disabled>Previous Stage</button>
-            <button id="runCodeBtn" class="primary-btn">Run Code</button>
-            <button id="soloNextStageBtn" class="primary-btn" disabled>Next Stage</button>
-        </div>
-        <div id="soloLoadingIndicator">Evaluating code...</div>
-        <div id="soloResult"></div>
-    </div>
+<div id="gameUI">
+<!-- Layout specific to 4v4 Q&A -->
+<div id="four-v-four-qna-layout">
+<div class="multiplayer-game-area"> <!-- New wrapper div -->
+<div class="game-container">
+<button class="primary-btn" id="backToLobbyBtn4v4">Back to Lobbies</button>
+<div class="player-circle" id="playerCircle"></div>
+<div id="timer">30</div>
+<!-- Question box moved outside the game-container -->
 </div>
-
-<div id="customModal" class="custom-modal">
-    <div class="custom-modal-content">
-        <h3 id="modalTitle"></h3>
-        <p id="modalMessage"></p>
-        <button class="primary-btn">OK</button> <!-- Added primary-btn class -->
-    </div>
+<div class="chat-box-layout" id="chatBox4v4">
+<h3>Lobby Chat</h3>
+<div class="chat-messages" id="chatMessages4v4"></div>
+<div class="sticker-panel" id="stickerPanel4v4"></div> <!-- Sticker panel for 4v4 -->
+<div class="chat-input-area">
+    <input id="chatInput4v4" placeholder="Type your message..." type="text"/>
+    <button id="sendChatBtn4v4">Send</button>
+    <button id="toggleStickerPanelBtn4v4" title="Toggle Stickers">😀</button>
+    <input type="file" id="stickerFileInput4v4" accept="image/*" style="display:none;"/>
 </div>
-
-<div id="createLobbyModal" class="custom-modal">
-    <div class="custom-modal-content">
-        <h3>Create New Lobby</h3>
-        <label for="new-lobby-name">Lobby Name:</label>
-        <input type="text" id="new-lobby-name" placeholder="Enter lobby name" required>
-
-        <label for="new-lobby-max-players">Max Players:</label>
-        <select id="new-lobby-max-players">
-            <!-- Options will be dynamically populated by JavaScript -->
-        </select>
-
-        <label for="initial-lives-select">Initial Lives:</label>
-        <select id="initial-lives-select">
-            <option value="3">3 Lives (Default)</option>
-            <option value="4">4 Lives</option>
-            <option value="5">5 Lives</option>
-        </select>
-
-        <label for="question-timer-select">Question Timer (seconds):</label>
-        <select id="question-timer-select">
-            <option value="15">15 Seconds</option>
-            <option value="30">30 Seconds (Default)</option>
-            <option value="45">45 Seconds</option>
-            <option value="60">60 Seconds</option>
-        </select>
-
-        <label class="checkbox-container">
-            <input type="checkbox" id="frenzy-mode-toggle">
+</div>
+</div>
+<!-- Question box now directly under multiplayer-game-area -->
+<div class="question-box" id="questionBox4v4">
+<p id="question4v4">Loading...</p>
+<input id="answerInput4v4" placeholder="Your answer here" type="text"/>
+<button id="submitAnswerBtn4v4">Submit</button>
+</div>
+<!-- Player cards container for 4v4 -->
+<div class="player-cards-container" id="playerCardsContainer4v4">
+<!-- Cards will be rendered here -->
+</div>
+<!-- Ranking Area (common for multiplayer) -->
+<div class="ranking-area">
+<div id="leaderboard">
+<h2>Current Round Leaderboard</h2>
+<table>
+<thead><tr><th>Rank</th><th>Player</th><th>Score</th><th>Accuracy</th></tr></thead>
+<tbody id="leaderboardBody"></tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- Layout specific to 1v1 Fill-in-the-Blanks -->
+<div id="one-v-one-fill-in-blanks-layout">
+<button class="primary-btn" id="backToLobbyBtn1v1">Back to Lobbies</button>
+<div class="side-by-side-game-area">
+<div class="player-panels-wrapper"> <!-- New wrapper for player panels -->
+<div class="player-panel" id="player1-panel">
+<h3 class="player-panel-name"><span id="player1-name"></span> <span id="player1-you-tag"></span></h3>
+<p>Lives: <span id="player1-lives"></span></p>
+<p id="player1-score-display"></p> <!-- Dynamic ELO/Points display -->
+<div class="question-box-1v1" id="questionBox1v1Player1">
+<p id="question1v1Player1"></p>
+<input id="answerInput1v1Player1" placeholder="Your answer here" type="text"/>
+<button id="submitAnswerBtn1v1Player1">Submit</button>
+</div>
+</div>
+<div class="player-panel" id="player2-panel">
+<h3 class="player-panel-name"><span id="player2-name"></span> <span id="player2-you-tag"></span></h3>
+<p>Lives: <span id="player2-lives"></span></p>
+<p id="player2-score-display"></p> <!-- Dynamic ELO/Points display -->
+<div class="question-box-1v1" id="questionBox1v1Player2">
+<p id="question1v1Player2"></p>
+<input id="answerInput1v1Player2" placeholder="Your answer here" type="text"/>
+<button id="submitAnswerBtn1v1Player2">Submit</button>
+</div>
+</div>
+</div>
+<div class="chat-box-layout middle-chat-divider" id="chatBox1v1">
+<h3>Lobby Chat</h3>
+<div class="chat-messages" id="chatMessages1v1"></div>
+<div class="sticker-panel" id="stickerPanel1v1"></div> <!-- Sticker panel for 1v1 -->
+<div class="chat-input-area">
+    <input id="chatInput1v1" placeholder="Type your message..." type="text"/>
+    <button id="sendChatBtn1v1">Send</button>
+    <button id="toggleStickerPanelBtn1v1" title="Toggle Stickers">😀</button>
+    <input type="file" id="stickerFileInput1v1" accept="image/*" style="display:none;"/>
+</div>
+</div>
+</div>
+<!-- Player cards container for 1v1 -->
+<div class="player-cards-container" id="playerCardsContainer1v1">
+<!-- Cards will be rendered here -->
+</div>
+<!-- Ranking Area (common for multiplayer) -->
+<div class="ranking-area">
+<div id="leaderboard">
+<h2>Current Round Leaderboard</h2>
+<table>
+<thead><tr><th>Rank</th><th>Player</th><th>Score</th><th>Accuracy</th></tr></thead>
+<tbody id="leaderboardBody"></tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="replay-button" id="replayButton">
+<button class="primary-btn">Replay</button>
+</div>
+</div>
+<!-- Solo Challenge UI -->
+<div id="soloChallengeUI">
+<button class="primary-btn" id="soloBackToLobbyBtn">Back to Mode Select</button>
+<h2>Solo Coding Challenge - Stage <span id="soloCurrentStage">1</span></h2>
+<div id="soloProblemDescription"></div>
+<textarea id="soloCodeEditor" placeholder="Write your C++ code here..."></textarea>
+<div id="soloChallengeButtons">
+<button class="primary-btn" disabled="" id="soloPrevStageBtn">Previous Stage</button>
+<button class="primary-btn" id="runCodeBtn">Run Code</button>
+<button class="primary-btn" disabled="" id="soloNextStageBtn">Next Stage</button>
+</div>
+<div id="soloLoadingIndicator">Evaluating code...</div>
+<div id="soloResult"></div>
+</div>
+</div>
+<div class="custom-modal" id="customModal">
+<div class="custom-modal-content">
+<h3 id="modalTitle"></h3>
+<p id="modalMessage"></p>
+<button class="primary-btn">OK</button> <!-- Added primary-btn class -->
+</div>
+</div>
+<div class="custom-modal" id="createLobbyModal">
+<div class="custom-modal-content">
+<h3>Create New Lobby</h3>
+<label for="new-lobby-name">Lobby Name:</label>
+<input id="new-lobby-name" placeholder="Enter lobby name" required="" type="text"/>
+<label for="new-lobby-max-players">Max Players:</label>
+<select id="new-lobby-max-players">
+<!-- Options will be dynamically populated by JavaScript -->
+</select>
+<label for="initial-lives-select">Initial Lives:</label>
+<select id="initial-lives-select">
+<option value="3">3 Lives (Default)</option>
+<option value="4">4 Lives</option>
+<option value="5">5 Lives</option>
+</select>
+<label for="question-timer-select">Question Timer (seconds):</label>
+<select id="question-timer-select">
+<option value="15">15 Seconds</option>
+<option value="30">30 Seconds (Default)</option>
+<option value="45">45 Seconds</option>
+<option value="60">60 Seconds</option>
+</select>
+<label class="checkbox-container">
+<input id="frenzy-mode-toggle" type="checkbox"/>
             Frenzy Mode (Enable Ability Cards)
         </label>
-
-        <div class="modal-buttons">
-            <button class="primary-btn" id="confirmCreateLobbyBtn">Create</button>
-            <button class="primary-btn" id="cancelCreateLobbyBtn">Cancel</button>
-        </div>
-    </div>
+<div class="modal-buttons">
+<button class="primary-btn" id="confirmCreateLobbyBtn">Create</button>
+<button class="primary-btn" id="cancelCreateLobbyBtn">Cancel</button>
 </div>
-
+</div>
+</div>
 <!-- New Code Input Modal -->
-<div id="codeInputModal" class="custom-modal">
-    <div class="custom-modal-content">
-        <h3>Enter Code</h3>
-        <label for="codeInput">Code:</label>
-        <input type="text" id="codeInput" placeholder="Enter your code here" autocomplete="off">
-        <div class="modal-buttons">
-            <button class="primary-btn" id="redeemCodeBtn">Redeem</button>
-            <button class="primary-btn" id="cancelCodeBtn">Cancel</button>
-        </div>
-    </div>
+<div class="custom-modal" id="codeInputModal">
+<div class="custom-modal-content">
+<h3>Enter Code</h3>
+<label for="codeInput">Code:</label>
+<input autocomplete="off" id="codeInput" placeholder="Enter your code here" type="text"/>
+<div class="modal-buttons">
+<button class="primary-btn" id="redeemCodeBtn">Redeem</button>
+<button class="primary-btn" id="cancelCodeBtn">Cancel</button>
 </div>
-
+</div>
+</div>
 <!-- Meta Vision Overlay -->
-<div id="metaVisionOverlay" class="custom-modal">
-    <div id="metaVisionContent" class="custom-modal-content">
-        <h3>Meta Vision: Opponent Decks</h3>
-        <div id="metaVisionPlayerDecks">
-            <!-- Player decks will be rendered here -->
-        </div>
-        <button class="primary-btn" onclick="closeMetaVision()">Close</button>
-    </div>
+<div class="custom-modal" id="metaVisionOverlay">
+<div class="custom-modal-content" id="metaVisionContent">
+<h3>Meta Vision: Opponent Decks</h3>
+<div id="metaVisionPlayerDecks">
+<!-- Player decks will be rendered here -->
 </div>
-
-
+<button class="primary-btn" onclick="closeMetaVision()">Close</button>
+</div>
+</div>
 <script>
     // Global game state variables
     let currentUser = null; // Stores currently logged-in user's data from in-memory 'users' object
@@ -2091,7 +2147,11 @@
     // Stores { username: { id: "uniqueId", password: "password", soloStage: 0,
     //                      rankedCorrectAnswers: 0, rankedTotalAnswers: 0, elo: 0,
     //                      casualCorrectAnswers: 0, casualTotalAnswers: 0, casualPoints: 0,
-    //                      tokens: 0, inventory: [], equippedTitle: '...' } }
+    //                      tokens: 0, inventory: [], equippedTitle: '...',
+    //                      soloStageAccuracy: { [stageNumber]: highestAccuracy }, // NEW: Solo accuracy
+    //                      warningCount: 0, // NEW: Inactivity warning count
+    //                      penaltyEndTime: null // NEW: Timestamp for penalty end
+    //                    } }
     const users = {};
     let nextUserId = 1; // Simple counter for unique user IDs for in-memory users
 
@@ -2118,6 +2178,17 @@
     const BOT_ACCURACY_MULTIPLAYER = 0.7; // 70% chance for bots to be correct in multiplayer
     const BOT_ACCURACY_SOLO = 1.0; // 100% chance for bots to be correct in solo (simulated AI)
 
+    // Inactivity penalty variables
+    const INACTIVITY_WARNING_THRESHOLD_MS = 3000; // 3 seconds
+    const MAX_WARNINGS = 3;
+    const PENALTY_DURATION_MS = 60 * 1000; // 1 minute
+    let lastActivityTime = new Date();
+    let inactiveTimer = null;
+    let isPageActive = true; // Tracks if the page is currently in the foreground
+
+    // Profanity list for censorship
+    const profanityList = ['badword', 'swear', 'fuck', 'shit', 'asshole', 'bitch', 'cunt', 'damn', 'hell', 'piss'];
+
     // Pre-defined game questions
     const originalQuestions = [
         { q: "What is the output of: cout << 2 + 2;", a: "4" },
@@ -2142,49 +2213,56 @@
             title: "Hello World!",
             problem: "Write a C++ program that prints 'Hello, World!' to the console. The output must exactly match 'Hello, World!' followed by a newline.",
             expectedOutput: "Hello, World!\n",
-            initialCode: `#include <iostream>\n\nint main() {\n  std::cout << "Hello, World!" << std::endl;\n  return 0;\n}`
+            initialCode: `#include <iostream>\n\nint main() {\n  std::cout << "Hello, World!" << std::endl;\n  return 0;\n}`,
+            maxAccuracyScore: 100 // Example max accuracy
         },
         {
             stage: 2,
             title: "Add Two Numbers",
             problem: "Write a C++ program that declares two integer variables, `a` and `b`, initializes them to 5 and 7 respectively, and prints their sum to the console. The output must be exactly '12' followed by a newline.",
             expectedOutput: "12\n",
-            initialCode: `#include <iostream>\n\nint main() {\n  int a = 5;\n  int b = 7;\n  std::cout << (a + b) << std::endl;\n  return 0;\n}`
+            initialCode: `#include <iostream>\n\nint main() {\n  int a = 5;\n  int b = 7;\n  std::cout << (a + b) << std::endl;\n  return 0;\n}`,
+            maxAccuracyScore: 95
         },
         {
             stage: 3,
             title: "Conditional Statement (If-Else)",
             problem: "Write a C++ program that declares an integer variable `num` and initializes it to 10. If `num` is greater than 5, print 'Greater than 5'; otherwise, print 'Not greater than 5'. The output must be exactly 'Greater than 5' followed by a newline.",
             expectedOutput: "Greater than 5\n",
-            initialCode: `#include <iostream>\n\nint main() {\n  int num = 10;\n  if (num > 5) {\n    std::cout << "Greater than 5" << std::endl;\n  } else {\n    std::cout << "Not greater than 5" << std::endl;\n  }\n  return 0;\n}`
+            initialCode: `#include <iostream>\n\nint main() {\n  int num = 10;\n  if (num > 5) {\n    std::cout << "Greater than 5" << std::endl;\n  } else {\n    std::cout << "Not greater than 5" << std::endl;\n  }\n  return 0;\n}`,
+            maxAccuracyScore: 90
         },
         {
             stage: 4,
             title: "Simple Loop (For loop)",
             problem: "Write a C++ program that uses a for loop to print numbers from 1 to 3, each on a new line. The output must be exactly '1\\n2\\n3\\n'.",
             expectedOutput: "1\n2\n3\n",
-            initialCode: `#include <iostream>\n\nint main() {\n  for (int i = 1; i <= 3; ++i) {\n    std::cout << i << std::endl;\n  }\n  return 0;\n}`
+            initialCode: `#include <iostream>\n\nint main() {\n  for (int i = 1; i <= 3; ++i) {\n    std::cout << i << std::endl;\n  }\n  return 0;\n}`,
+            maxAccuracyScore: 85
         },
         {
             stage: 5,
             title: "Basic Function",
             problem: "Write a C++ program with a function named `add` that takes two integers as parameters and returns their sum. In `main`, call `add` with 15 and 20 and print the result. The output must be exactly '35' followed by a newline.",
             expectedOutput: "35\n",
-            initialCode: `#include <iostream>\n\nint add(int a, int b) {\n  return a + b;\n}\n\nint main() {\n  std::cout << add(15, 20) << std::endl;\n  return 0;\n}\n`
+            initialCode: `#include <iostream>\n\nint add(int a, int b) {\n  return a + b;\n}\n\nint main() {\n  std::cout << add(15, 20) << std::endl;\n  return 0;\n}\n`,
+            maxAccuracyScore: 100
         },
         {
             stage: 6,
             title: "Factorial Calculation",
             problem: "Write a C++ program to calculate the factorial of a number (e.g., 5). Print the result. The output must be exactly '120' followed by a newline. (Factorial of 5 is 5*4*3*2*1 = 120)",
             expectedOutput: "120\n",
-            initialCode: `#include <iostream>\n\nint main() {\n  int n = 5;\n  long long factorial = 1;\n\n  for (int i = 1; i <= n; ++i) {\n    factorial *= i;\n  }\n\n  std::cout << factorial << std::endl;\n  return 0;\n}`
+            initialCode: `#include <iostream>\n\nint main() {\n  int n = 5;\n  long long factorial = 1;\n\n  for (int i = 1; i <= n; ++i) {\n    factorial *= i;\n  }\n\n  std::cout << factorial << std::endl;\n  return 0;\n}`,
+            maxAccuracyScore: 90
         },
         {
             stage: 7,
             title: "Array Sum",
             problem: "Write a C++ program that initializes an integer array with values {10, 20, 30}. Calculate the sum of its elements and print the sum. The output must be exactly '60' followed by a newline.",
             expectedOutput: "60\n",
-            initialCode: `#include <iostream>\n#include <vector>\n\nint main() {\n  std::vector<int> numbers = {10, 20, 30};\n  int sum = 0;\n\n  for (int num : numbers) {\n    sum += num;\n}\n\n  std::cout << sum << std::endl;\n  return 0;\n}`
+            initialCode: `#include <iostream>\n#include <vector>\n\nint main() {\n  std::vector<int> numbers = {10, 20, 30};\n  int sum = 0;\n\n  for (int num : numbers) {\n    sum += num;\n}\n\n  std::cout << sum << std::endl;\n  return 0;\n}`,
+            maxAccuracyScore: 95
         }
     ];
 
@@ -2212,7 +2290,6 @@
 
 
     // --- DOM Element References ---
-
     const authContainer = document.getElementById('authContainer');
     const gameModeSelection = document.getElementById('gameModeSelection');
     const rankedGameModeSelection = document.getElementById('rankedGameModeSelection'); // New reference
@@ -2269,6 +2346,8 @@
     const readyToggleBtn = document.getElementById('readyToggleBtn');
     const startGameButton = document.getElementById('startGameButton');
     const createNewLobbyBtn = document.getElementById('createNewLobbyBtn'); // Added reference
+    const matchingUpMessage = document.getElementById('matchingUpMessage'); // New reference for matching up message
+
 
     const fourVFourQnALayout = document.getElementById('four-v-four-qna-layout');
     const oneVOneFillInBlanksLayout = document.getElementById('one-v-one-fill-in-blanks-layout');
@@ -2284,13 +2363,11 @@
     const player1Name = document.getElementById('player1-name');
     const player1YouTag = document.getElementById('player1-you-tag');
     const player1Lives = document.getElementById('player1-lives');
-    const player1Elo = document.getElementById('player1-elo');
-    const player1Points = document.getElementById('player1-points'); // New for casual points
+    const player1ScoreDisplay = document.getElementById('player1-score-display'); // Renamed
     const player2Name = document.getElementById('player2-name');
     const player2YouTag = document.getElementById('player2-you-tag');
     const player2Lives = document.getElementById('player2-lives');
-    const player2Elo = document.getElementById('player2-elo');
-    const player2Points = document.getElementById('player2-points'); // New for casual points
+    const player2ScoreDisplay = document.getElementById('player2-score-display'); // Renamed
     const questionBox1v1Player1 = document.getElementById('questionBox1v1Player1');
     const question1v1Player1 = document.getElementById('question1v1Player1');
     const answerInput1v1Player1 = document.getElementById('answerInput1v1Player1');
@@ -2310,15 +2387,24 @@
     const soloLoadingIndicator = document.getElementById('soloLoadingIndicator');
     const soloResult = document.getElementById('soloResult');
 
+    // Chat elements for 4v4
     const chatMessages4v4Div = document.getElementById('chatMessages4v4');
     const chatInput4v4 = document.getElementById('chatInput4v4');
     const sendChatBtn4v4 = document.getElementById('sendChatBtn4v4');
     const chatBox4v4 = document.getElementById('chatBox4v4');
+    const toggleStickerPanelBtn4v4 = document.getElementById('toggleStickerPanelBtn4v4');
+    const stickerPanel4v4 = document.getElementById('stickerPanel4v4');
+    const stickerFileInput4v4 = document.getElementById('stickerFileInput4v4');
 
+    // Chat elements for 1v1
     const chatMessages1v1Div = document.getElementById('chatMessages1v1');
     const chatInput1v1 = document.getElementById('chatInput1v1');
     const sendChatBtn1v1 = document.getElementById('sendChatBtn1v1');
     const chatBox1v1 = document.getElementById('chatBox1v1');
+    const toggleStickerPanelBtn1v1 = document.getElementById('toggleStickerPanelBtn1v1');
+    const stickerPanel1v1 = document.getElementById('stickerPanel1v1');
+    const stickerFileInput1v1 = document.getElementById('stickerFileInput1v1');
+
 
     const leaderboardBody = document.getElementById('leaderboardBody');
     const globalLeaderboardBody = document.getElementById('globalLeaderboardBody');
@@ -2332,11 +2418,11 @@
     const profileAvatarText = document.getElementById('profileAvatarText');
     const profileUsernameDisplay = document.getElementById('profileUsernameDisplay');
     const profileRankedElo = document.getElementById('profileRankedElo');
-    const profileRankDisplay = document.getElementById('profileRankDisplay'); // New: Rank display
     const profileCasualPoints = document.getElementById('profileCasualPoints');
     const profileRankedAccuracy = document.getElementById('profileRankedAccuracy');
     const profileCasualAccuracy = document.getElementById('profileCasualAccuracy');
     const profileSoloStages = document.getElementById('profileSoloStages');
+    const profileSoloAvgAccuracy = document.getElementById('profileSoloAvgAccuracy'); // NEW
     const profileTokens = document.getElementById('profileTokens');
     const profileEquippedTitle = document.getElementById('profileEquippedTitle');
     const profileInventoryList = document.getElementById('profileInventoryList').querySelector('ul');
@@ -2440,6 +2526,8 @@
         oneVOneFillInBlanksLayout.style.display = 'none';
         chatBox4v4.style.display = 'none'; // Ensure these are hidden when changing sections
         chatBox1v1.style.display = 'none'; // Ensure these are hidden when changing sections
+        stickerPanel4v4.style.display = 'none'; // Hide sticker panels
+        stickerPanel1v1.style.display = 'none'; // Hide sticker panels
         playerCardsContainer4v4.style.display = 'none'; // Hide card containers
         playerCardsContainer1v1.style.display = 'none'; // Hide card containers
 
@@ -2514,7 +2602,10 @@
                     casualPoints: users[username].casualPoints || 0,
                     tokens: users[username].tokens || 0,
                     inventory: users[username].inventory || [],
-                    equippedTitle: users[username].equippedTitle || 'New Rival' // Default title
+                    equippedTitle: users[username].equippedTitle || 'New Rival', // Default title
+                    soloStageAccuracy: users[username].soloStageAccuracy || {}, // NEW: Initialize solo accuracy
+                    warningCount: users[username].warningCount || 0, // NEW: Initialize warning count
+                    penaltyEndTime: users[username].penaltyEndTime ? new Date(users[username].penaltyEndTime) : null // NEW: Initialize penalty end time
                 };
                 userId = currentUser.id; // Set userId for the session
                 handleSuccessfulAuth();
@@ -2540,7 +2631,10 @@
                 casualPoints: 0, // New users start with 0 casual points
                 tokens: 0, // New users start with 0 tokens
                 inventory: [], // New users start with empty inventory
-                equippedTitle: 'New Rival' // Default title for new users
+                equippedTitle: 'New Rival', // Default title for new users
+                soloStageAccuracy: {}, // NEW: Initialize empty solo accuracy
+                warningCount: 0, // NEW: Initialize warning count
+                penaltyEndTime: null // NEW: Initialize penalty end time
             };
             await showCustomModal("Success", `Account for "${username}" created! Please login.`);
             toggleAuthMode(); // Switch to login mode
@@ -2563,6 +2657,12 @@
                 if (lobby.players.filter(p => p.type === 'human').length === 0) {
                     delete activeLobbies[currentLobbyId];
                 }
+            }
+
+            // Reset penalty state on logout
+            if (currentUser) {
+                users[currentUser.username].warningCount = 0;
+                users[currentUser.username].penaltyEndTime = null;
             }
 
             currentUser = null;
@@ -2609,6 +2709,7 @@
         codeInputIcon.style.display = 'flex'; // Ensure code input icon is shown here
         showSection(mainLobbyDashboard); // Show main lobby dashboard after login
         updateGlobalLeaderboard(); // Update global leaderboard on login
+        checkAndApplyPenalty(); // Check for existing penalty on login
     }
 
     /**
@@ -2683,6 +2784,11 @@
             showCustomModal("Error", "You must be logged in to create a lobby.");
             return;
         }
+        if (isPenalized()) {
+            const timeLeft = Math.ceil((currentUser.penaltyEndTime - new Date()) / 1000);
+            showCustomModal("Penalty Active", `You cannot create a lobby while penalized. Please wait ${timeLeft} seconds.`);
+            return;
+        }
         createLobbyModal.style.display = 'flex';
         newLobbyNameInput.value = ''; // Clear previous input
         frenzyModeToggle.checked = false; // Default frenzy mode off
@@ -2753,8 +2859,24 @@
             await showCustomModal("Error", "Please enter a lobby name.");
             return;
         }
+        if (isPenalized()) {
+            const timeLeft = Math.ceil((currentUser.penaltyEndTime - new Date()) / 1000);
+            showCustomModal("Penalty Active", `You cannot create a lobby while penalized. Please wait ${timeLeft} seconds.`);
+            return;
+        }
 
         const newLobbyId = generateLobbyId(currentLobbyType.replace('-', '_'));
+
+        // Helper function to get 3 random cards for frenzy mode
+        const getStartingCards = () => {
+            if (!isFrenzyMode) return [];
+            const cards = [];
+            for (let i = 0; i < 3; i++) {
+                const randomCard = abilityCards[Math.floor(Math.random() * abilityCards.length)];
+                cards.push({ id: randomCard.id, name: randomCard.name });
+            }
+            return cards;
+        };
 
         const initialPlayer = {
             id: currentUser.id,
@@ -2768,16 +2890,16 @@
             casualCorrectAnswers: currentUser.casualCorrectAnswers,
             casualTotalAnswers: currentUser.casualTotalAnswers,
             lives: initialLives, // Set initial lives from lobby setting
-            cards: [], // Initialize cards array for custom mode
+            cards: getStartingCards(), // Initialize cards array for custom mode with 3 cards if frenzy
             shields: 0, // Initialize shields for custom mode
-            goldenDefenseUsed: false // Track Golden Defense usage
+            goldenDefenseUsed: false
         };
 
         const newLobby = {
             id: newLobbyId,
             name: lobbyName,
             type: currentLobbyType,
-            players: [initialPlayer],
+            players: [initialPlayer], // Only human player initially
             maxPlayers: maxPlayers,
             gameStarted: false,
             chatMessages: [],
@@ -2790,30 +2912,78 @@
             playerCycles: 0 // New: Track player turns for card distribution
         };
 
-        // Add bots if maxPlayers > 1 for simulation purposes
-        for (let i = 1; i < maxPlayers; i++) {
-            newLobby.players.push({
-                id: `bot_${newLobbyId}_${i}`,
+        activeLobbies[newLobbyId] = newLobby;
+        closeCreateLobbyModal();
+        await joinLobby(newLobbyId); // Automatically join the newly created lobby
+
+        // Start adding bots with a delay
+        addBotsToLobby(newLobbyId);
+    }
+
+    /**
+     * Adds bots to the lobby one by one with a delay and displays a "Matching Up..." message.
+     * @param {string} lobbyId The ID of the lobby to add bots to.
+     */
+    async function addBotsToLobby(lobbyId) {
+        const lobby = activeLobbies[lobbyId];
+        if (!lobby) return;
+
+        if (matchingUpMessage) {
+            matchingUpMessage.style.display = 'block';
+            matchingUpMessage.textContent = 'Matching Up...';
+        }
+
+        const initialLives = lobby.initialLives;
+        const getStartingCards = () => {
+            if (!lobby.isFrenzyMode) return [];
+            const cards = [];
+            for (let i = 0; i < 3; i++) {
+                const randomCard = abilityCards[Math.floor(Math.random() * abilityCards.length)];
+                cards.push({ id: randomCard.id, name: randomCard.name });
+            }
+            return cards;
+        };
+
+        for (let i = lobby.players.length; i < lobby.maxPlayers; i++) {
+            // Check if lobby is still valid and not full (human could have left or another human joined)
+            if (!activeLobbies[lobbyId] || lobby.players.length >= lobby.maxPlayers) {
+                break; // Stop adding bots if lobby is full or removed
+            }
+
+            await new Promise(resolve => setTimeout(resolve, 2000)); // 2-second delay for each bot
+
+            const bot = {
+                id: `bot_${lobbyId}_${i}`,
                 name: `Bot_${i}`,
-                isReady: true, // Bots are always ready
+                isReady: true,
                 type: 'bot',
-                elo: 0, // Bots start with 0 ELO
-                casualPoints: 0, // Bots start with 0 casual points
+                elo: 0,
+                casualPoints: 0,
                 rankedCorrectAnswers: 0,
                 rankedTotalAnswers: 0,
                 casualCorrectAnswers: 0,
                 casualTotalAnswers: 0,
-                lives: initialLives, // Bots also get initial lives from lobby setting
-                cards: [], // Initialize cards array for custom mode
-                shields: 0, // Initialize shields for custom mode
-                goldenDefenseUsed: false // Track Golden Defense usage
-            });
+                lives: initialLives,
+                cards: getStartingCards(),
+                shields: 0,
+                goldenDefenseUsed: false
+            };
+            lobby.players.push(bot);
+            // Update UI after each bot joins if the user is currently in this lobby
+            if (currentLobbyId === lobbyId) {
+                players = [...lobby.players]; // Update local players array
+                displayPlayerCount.textContent = players.length;
+                renderLobbyPlayers();
+                updateStartGameButtonState();
+            }
         }
 
-        activeLobbies[newLobbyId] = newLobby;
-        closeCreateLobbyModal();
-        await joinLobby(newLobbyId); // Automatically join the newly created lobby
+        // Hide "Matching Up..." message when all bots are added or lobby is full
+        if (matchingUpMessage) {
+            matchingUpMessage.style.display = 'none';
+        }
     }
+
 
     /**
      * Displays the list of available lobbies for a given game type.
@@ -2823,6 +2993,11 @@
     function showLobbyList(type) {
         if (!currentUser) {
             showCustomModal("Error", "Please log in to view lobbies.");
+            return;
+        }
+        if (isPenalized()) {
+            const timeLeft = Math.ceil((currentUser.penaltyEndTime - new Date()) / 1000);
+            showCustomModal("Penalty Active", `You cannot join a lobby while penalized. Please wait ${timeLeft} seconds.`);
             return;
         }
 
@@ -2852,6 +3027,11 @@
             await showCustomModal("Error", "You must be logged in to join a ranked lobby.");
             return;
         }
+        if (isPenalized()) {
+            const timeLeft = Math.ceil((currentUser.penaltyEndTime - new Date()) / 1000);
+            showCustomModal("Penalty Active", `You cannot join a ranked match while penalized. Please wait ${timeLeft} seconds.`);
+            return;
+        }
 
         currentLobbyType = gameType; // Set the current lobby type to the ranked game type
         isRankedMatch = true; // This is a ranked match
@@ -2869,6 +3049,7 @@
 
         if (foundLobby) {
             await joinLobby(foundLobby.id);
+            addBotsToLobby(foundLobby.id); // Continue adding bots if lobby not full
         } else {
             // No suitable lobby found, create a new one
             const newLobbyId = generateLobbyId(gameType.replace(/-/g, '_')); // Use gameType for ID prefix
@@ -2908,7 +3089,7 @@
                 id: newLobbyId,
                 name: lobbyName,
                 type: gameType, // Store the specific ranked game type
-                players: [initialPlayer],
+                players: [initialPlayer], // Only human player initially
                 maxPlayers: maxPlayers,
                 gameStarted: false,
                 chatMessages: [],
@@ -2920,28 +3101,9 @@
                 playerCycles: 0
             };
 
-            // Add bots to fill the lobby
-            for (let i = 1; i < maxPlayers; i++) {
-                newLobby.players.push({
-                    id: `bot_${newLobbyId}_${i}`,
-                    name: `RankedBot_${i}`,
-                    isReady: true,
-                    type: 'bot',
-                    elo: 0, // Bots start with 0 ELO
-                    casualPoints: 0, // Bots start with 0 casual points
-                    rankedCorrectAnswers: 0,
-                    rankedTotalAnswers: 0,
-                    casualCorrectAnswers: 0,
-                    casualTotalAnswers: 0,
-                    lives: 3,
-                    cards: [],
-                    shields: 0,
-                    goldenDefenseUsed: false
-                });
-            }
-
             activeLobbies[newLobbyId] = newLobby;
             await joinLobby(newLobbyId);
+            addBotsToLobby(newLobbyId); // Start adding bots with a delay
         }
     }
 
@@ -2975,7 +3137,7 @@
                 <p>Status: ${lobby.gameStarted ? 'In Game' : 'Waiting'}</p>
                 <p>Mode: ${lobby.isCustom ? 'Custom' : 'Casual'}</p>
                 ${lobby.isCustom ? `<p>Frenzy Mode: ${lobby.isFrenzyMode ? 'On' : 'Off'}</p>` : ''}
-                <button class="join-btn primary-btn" data-lobby-id="${lobby.id}" ${isFull || lobby.gameStarted ? 'disabled' : ''}>
+                <button class="join-btn primary-btn" data-lobby-id="${lobby.id}" ${isFull || lobby.gameStarted || isPenalized() ? 'disabled' : ''}>
                     ${isFull ? 'Full' : (lobby.gameStarted ? 'In Game' : 'Join')}
                 </button>
             `;
@@ -2991,6 +3153,11 @@
     async function joinLobby(lobbyIdToJoin) {
         if (!currentUser) {
             await showCustomModal("Error", "You must be logged in to join a lobby.");
+            return;
+        }
+        if (isPenalized()) {
+            const timeLeft = Math.ceil((currentUser.penaltyEndTime - new Date()) / 1000);
+            showCustomModal("Penalty Active", `You cannot join a lobby while penalized. Please wait ${timeLeft} seconds.`);
             return;
         }
 
@@ -3016,6 +3183,17 @@
                 return;
             }
 
+            // Helper function to get 3 random cards for frenzy mode
+            const getStartingCards = () => {
+                if (!lobby.isFrenzyMode) return [];
+                const cards = [];
+                for (let i = 0; i < 3; i++) {
+                    const randomCard = abilityCards[Math.floor(Math.random() * abilityCards.length)];
+                    cards.push({ id: randomCard.id, name: randomCard.name });
+                }
+                return cards;
+            };
+
             // Add current user to the lobby
             const playerToAdd = {
                 id: currentUser.id,
@@ -3029,9 +3207,9 @@
                 casualCorrectAnswers: currentUser.casualCorrectAnswers,
                 casualTotalAnswers: currentUser.casualTotalAnswers,
                 lives: lobby.initialLives, // Get initial lives from lobby setting
-                cards: [], // Initialize cards array for custom mode
+                cards: getStartingCards(), // Initialize cards array for custom mode with 3 cards if frenzy
                 shields: 0, // Initialize shields for custom mode
-                goldenDefenseUsed: false // Track Golden Defense usage
+                goldenDefenseUsed: false
             };
             currentPlayers.push(playerToAdd);
             lobby.players = currentPlayers; // Update in-memory lobby
@@ -3060,6 +3238,16 @@
         } else if (currentLobbyType.includes('fill-in-blanks')) { // Works for casual, ranked, and custom 1v1 fill-in-the-blanks
             chatBox1v1.style.display = 'flex';
             renderChatMessages('1v1', lobby.chatMessages);
+        }
+
+        // Show "Matching Up..." message if lobby is not full and not started
+        if (matchingUpMessage) {
+            if (lobby.players.length < lobby.maxPlayers && !lobby.gameStarted) {
+                matchingUpMessage.style.display = 'block';
+                matchingUpMessage.textContent = 'Matching Up...';
+            } else {
+                matchingUpMessage.style.display = 'none';
+            }
         }
     }
 
@@ -3101,10 +3289,13 @@
         if (currentLobbyType.startsWith('ranked-')) {
             showSection(rankedGameModeSelection);
         } else {
-            showSection(lobbyListContainer); // Go back to the list of lobbies for the current type
-            renderLobbies(); // Re-render lobbies to reflect changes
+            showSection(gameModeSelection); // Go back to the list of modes for the current type
+            // No need to call renderLobbies here, as we are going back to mode selection, not lobby list
         }
         currentLobbyType = ''; // Clear lobby type after leaving
+        if (matchingUpMessage) {
+            matchingUpMessage.style.display = 'none'; // Hide matching up message
+        }
     }
 
     /**
@@ -3155,9 +3346,13 @@
             playerCard.style.minHeight = 'auto';
             playerCard.style.padding = '15px';
 
+            // Determine whether to display ELO or Points
+            const scoreLabel = isRankedMatch ? 'ELO' : 'Points';
+            const scoreValue = isRankedMatch ? p.elo : p.casualPoints;
+
             playerCard.innerHTML = `
                 <h3>${p.name} ${p.id === currentUser.id ? "(You)" : ""} ${p.type === 'bot' ? "(Bot)" : ""}</h3>
-                <p>${isRankedMatch ? 'ELO' : 'Points'}: ${isRankedMatch ? p.elo : p.casualPoints}</p>
+                <p>${scoreLabel}: ${scoreValue}</p>
                 <p>Lives: ${p.lives}</p>
                 <p>Status: <span class="player-status ${p.isReady ? 'ready' : 'not-ready'}">${p.isReady ? 'Ready' : 'Not Ready'}</span></p>
             `;
@@ -3181,9 +3376,12 @@
         const allPlayersReady = lobby.players.length > 0 && lobby.players.every(p => p.isReady);
         const hasMinPlayers = lobby.players.length >= 2; // Example: require at least 2 players
 
-        startGameButton.disabled = !(isHost && allPlayersReady && hasMinPlayers);
+        startGameButton.disabled = !(isHost && allPlayersReady && hasMinPlayers) || isPenalized();
 
-        if (isHost && allPlayersReady && hasMinPlayers) {
+        if (isPenalized()) {
+            const timeLeft = Math.ceil((currentUser.penaltyEndTime - new Date()) / 1000);
+            startGameButton.title = `You are penalized. Cannot start game for ${timeLeft} seconds.`;
+        } else if (isHost && allPlayersReady && hasMinPlayers) {
             startGameButton.title = "All players are ready! Click to start.";
         } else if (isHost) {
             let tooltip = "You are the host. ";
@@ -3201,6 +3399,11 @@
     async function startGame() {
         if (!currentLobbyId || !currentUser) {
             showCustomModal("Error", "Not in a lobby.");
+            return;
+        }
+        if (isPenalized()) {
+            const timeLeft = Math.ceil((currentUser.penaltyEndTime - new Date()) / 1000);
+            showCustomModal("Penalty Active", `You cannot start a game while penalized. Please wait ${timeLeft} seconds.`);
             return;
         }
 
@@ -3268,17 +3471,21 @@
 
     /**
      * Leaves the current game and returns to the single lobby view.
-     * @param {boolean} gameWon Indicates if the current user won the game.
+     * Tokens are NOT awarded if the user leaves prematurely.
+     * @param {boolean} [isPenaltyExit=false] True if the exit is due to a penalty.
      */
-    async function leaveGame(gameWon = false) {
-        const confirmed = await showCustomModal("Confirm Exit Game", "Are you sure you want to exit the current game and return to lobbies?", true);
+    async function leaveGame(isPenaltyExit = false) {
+        let confirmed = true;
+        if (!isPenaltyExit) {
+            confirmed = await showCustomModal("Confirm Exit Game", "Are you sure you want to exit the current game and return to lobbies? No tokens will be awarded for an incomplete game.", true);
+        }
+
         if (!confirmed) {
             return;
         }
         if (timer) clearInterval(timer);
 
-        // Award tokens before cleanup
-        awardTokens(gameWon);
+        // Tokens are NOT awarded here, only in endGame() when the game concludes naturally.
 
         // Reset game UI elements
         gameTimerDisplay.textContent = '30';
@@ -3308,7 +3515,7 @@
                 isReady: p.type === 'human' ? (lobby.isRanked ? true : false) : true, // Human ready state depends on lobby type, bots stay ready
                 cards: [], // Clear cards on leaving game
                 shields: 0, // Clear shields
-                goldenDefenseUsed: false // Reset golden defense usage
+                goldenDefenseUsed: false
             }));
             players = [...lobby.players]; // Update local players array
 
@@ -3343,9 +3550,13 @@
 
     /**
      * Leaves the solo challenge and returns to the game mode selection.
+     * @param {boolean} [isPenaltyExit=false] True if the exit is due to a penalty.
      */
-    async function leaveSoloChallenge() {
-        const confirmed = await showCustomModal("Confirm Exit Solo Challenge", "Are you sure you want to exit the solo challenge and return to mode selection?", true);
+    async function leaveSoloChallenge(isPenaltyExit = false) {
+        let confirmed = true;
+        if (!isPenaltyExit) {
+            confirmed = await showCustomModal("Confirm Exit Solo Challenge", "Are you sure you want to exit the solo challenge and return to mode selection?", true);
+        }
         if (!confirmed) {
             return;
         }
@@ -3425,23 +3636,29 @@
         questions.sort(() => Math.random() - 0.5); // Shuffle questions
 
         // Reset player lives and scores for the game round from the lobby's players
-        players = lobby.players.map(p => ({
-            ...p,
-            lives: lobby.initialLives, // Use lobby's initial lives
-            currentRoundScore: 0,
-            roundCorrectAnswers: 0,
-            roundTotalAnswers: 0,
-            cards: [], // Clear cards initially, then distribute if frenzy
-            shields: 0, // Reset shields for new game
-            goldenDefenseUsed: false // Reset golden defense usage
-        }));
+        players = lobby.players.map(p => {
+            // Re-distribute cards only if frenzy mode is active and it's a new game (not replay)
+            let cardsToStartWith = p.cards;
+            if (lobby.isFrenzyMode && lobby.playerCycles === 0) { // Only on initial game start, not replay
+                cardsToStartWith = [];
+                for (let i = 0; i < 3; i++) {
+                    const randomCard = abilityCards[Math.floor(Math.random() * abilityCards.length)];
+                    cardsToStartWith.push({ id: randomCard.id, name: randomCard.name });
+                }
+            }
 
-        // Distribute initial cards if Frenzy Mode is enabled
-        if (lobby.isFrenzyMode) {
-            players.forEach(p => {
-                distributeInitialCards(p, 3); // Give each player 3 cards at start
-            });
-        }
+            return {
+                ...p,
+                lives: lobby.initialLives, // Use lobby's initial lives
+                currentRoundScore: 0,
+                roundCorrectAnswers: 0,
+                roundTotalAnswers: 0,
+                isReady: p.type === 'human' ? (lobby.isRanked ? true : false) : true, // Human ready state depends on lobby type, bots stay ready
+                cards: cardsToStartWith, // Use newly distributed cards or existing if replay
+                shields: 0, // Reset shields for new game
+                goldenDefenseUsed: false
+            };
+        });
 
         playerCycles = 0; // Reset player cycles for card distribution
         currentQuestionIndex = 0;
@@ -3590,7 +3807,7 @@
                 "This one's tricky!",
                 "Almost got it...",
                 "Compiling thoughts..."
-            ][Math.floor(Math.random() * 5)];
+            ][Math.random() * 5 | 0]; // Faster way to get random integer
             const lobby = activeLobbies[currentLobbyId];
             if (lobby) {
                 const currentPlayer = players[currentPlayerIndex];
@@ -3598,7 +3815,8 @@
                     senderId: currentPlayer.id,
                     senderName: currentPlayer.name,
                     message: randomChat,
-                    timestamp: new Date()
+                    timestamp: new Date(),
+                    isSticker: false // Bots send text messages
                 });
                 renderChatMessages(currentLobbyType.includes('qna') ? '4v4' : '1v1', lobby.chatMessages);
             }
@@ -3783,7 +4001,7 @@
         }
 
         const currentUserWon = gameWinner && gameWinner.id === currentUser.id;
-        awardTokens(currentUserWon);
+        awardTokens(currentUserWon); // Only award tokens when game ends naturally
     }
 
     /**
@@ -3836,19 +4054,11 @@
                 roundCorrectAnswers: 0,
                 roundTotalAnswers: 0,
                 isReady: p.type === 'human' ? (lobby.isRanked ? true : false) : true, // Human ready state depends on lobby type, bots stay ready
-                cards: [], // Clear cards on replay
+                cards: lobby.isFrenzyMode ? [] : [], // Clear cards on replay, they will be redistributed if frenzy
                 shields: 0, // Clear shields
-                goldenDefenseUsed: false // Reset golden defense usage
+                goldenDefenseUsed: false
             }));
             players = [...lobby.players]; // Update local player array
-
-            // Distribute initial cards if Frenzy Mode is enabled for replay
-            if (lobby.isFrenzyMode) {
-                players.forEach(p => {
-                    distributeInitialCards(p, 3); // Give each player 3 cards at start of replay
-                });
-            }
-
             isPlayerReady = lobby.isRanked ? true : false; // Current user ready state based on lobby type
             updateReadyButtonState(); // Update ready button state
             updateStartGameButtonState(); // Update start button status
@@ -3865,21 +4075,46 @@
 
         if (players.length === 0) return;
 
-        const radius = playerCircleDiv.offsetWidth / 2 - 70; // Adjust radius for player size
-        const centerX = playerCircleDiv.offsetWidth / 2;
-        const centerY = playerCircleDiv.offsetHeight / 2;
+        // Define fixed positions for up to 4 players, adjusted to avoid question box overlap.
+        // These percentages are relative to the playerCircleDiv and will be centered by transform(-50%,-50%)
+        const fixedPositions = [
+            // Positions for 4 players (corners)
+            { left: '15%', top: '15%' },    // Top-left
+            { left: '85%', top: '15%' },   // Top-right
+            { left: '15%', top: '65%' }, // Bottom-left (moved up from 85%)
+            { left: '85%', top: '65%' } // Bottom-right (moved up from 85%)
+        ];
+
+        let effectivePositions = [];
+        if (players.length === 4) {
+            effectivePositions = fixedPositions;
+        } else if (players.length === 3) {
+            // Top-left, Top-right, Bottom-center
+            effectivePositions = [
+                { left: '15%', top: '15%' },
+                { left: '85%', top: '15%' },
+                { left: '50%', top: '65%' } // Centered horizontally at bottom (moved up from 85%)
+            ];
+        } else if (players.length === 2) {
+            // Top-left, Bottom-right diagonal, adjusted to be higher
+            effectivePositions = [
+                { left: '20%', top: '20%' },
+                { left: '80%', top: '65%' } // Adjusted to be above the question box
+            ];
+        } else { // For 1 player or unexpected numbers, default to center
+            effectivePositions = [{ left: '50%', top: '50%' }];
+        }
 
         players.forEach((player, index) => {
             const playerDiv = document.createElement('div');
             playerDiv.className = 'player';
             playerDiv.setAttribute('data-player-id', player.id);
 
-            // Calculate position
-            const angle = (index / players.length) * 2 * Math.PI;
-            const x = centerX + radius * Math.cos(angle);
-            const y = centerY + radius * Math.sin(angle);
-            playerDiv.style.left = `${x}px`;
-            playerDiv.style.top = `${y}px`;
+            const pos = effectivePositions[index];
+            playerDiv.style.left = pos.left;
+            playerDiv.style.top = pos.top;
+            // The transform: translate(-50%, -50%) is already in CSS for .player,
+            // which correctly centers the player div around the specified left/top.
 
             // Display lives and shields
             let livesDisplay = `Lives: ${player.lives}`;
@@ -3915,12 +4150,16 @@
             return;
         }
 
+        // Determine score label and value based on game type
+        const scoreLabel = isRankedMatch ? 'Ranked ELO' : 'Casual Points';
+        const player1ScoreValue = isRankedMatch ? player1.elo : player1.casualPoints;
+        const player2ScoreValue = isRankedMatch ? player2.elo : player2.casualPoints;
+
         // Render player 1 (human) details
         player1Name.textContent = player1.name;
         player1YouTag.textContent = "(You)";
         player1Lives.textContent = player1.lives;
-        player1Elo.textContent = player1.elo;
-        player1Points.textContent = player1.casualPoints;
+        player1ScoreDisplay.textContent = `${scoreLabel}: ${player1ScoreValue}`;
         // Add shield display for player1
         player1Lives.innerHTML = `Lives: ${player1.lives} ${player1.shields > 0 ? `| Shields: ${player1.shields} <svg class="shield-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.76-7 8.94V12H5V6.3l7-3.11v8.79z"/></svg>` : ''}`;
 
@@ -3929,8 +4168,7 @@
         player2Name.textContent = player2.name;
         player2YouTag.textContent = player2.type === 'bot' ? "(Bot)" : "";
         player2Lives.textContent = player2.lives;
-        player2Elo.textContent = player2.elo;
-        player2Points.textContent = player2.casualPoints;
+        player2ScoreDisplay.textContent = `${scoreLabel}: ${player2ScoreValue}`;
         // Add shield display for player2
         player2Lives.innerHTML = `Lives: ${player2.lives} ${player2.shields > 0 ? `| Shields: ${player2.shields} <svg class="shield-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.76-7 8.94V12H5V6.3l7-3.11v8.79z"/></svg>` : ''}`;
 
@@ -3949,6 +4187,13 @@
      */
     function updateLeaderboard() {
         leaderboardBody.innerHTML = '';
+
+        // Determine the score column header based on game type
+        const scoreHeader = isRankedMatch ? 'ELO' : 'C Points';
+
+        // Update the leaderboard table header
+        document.querySelector('#leaderboard thead tr').innerHTML = `<th>Rank</th><th>Player</th><th>${scoreHeader}</th><th>Accuracy</th>`;
+
 
         // Sort players by currentRoundScore, then lives, then correctAnswers
         const sortedPlayers = [...players].sort((a, b) => {
@@ -3984,6 +4229,11 @@
     function selectSoloChallengeMode() {
         if (!currentUser) {
             showCustomModal("Error", "Please log in to start a challenge.");
+            return;
+        }
+        if (isPenalized()) {
+            const timeLeft = Math.ceil((currentUser.penaltyEndTime - new Date()) / 1000);
+            showCustomModal("Penalty Active", `You cannot start a solo challenge while penalized. Please wait ${timeLeft} seconds.`);
             return;
         }
         currentLobbyType = 'solo-coding-challenge';
@@ -4022,7 +4272,7 @@
         soloPrevStageBtn.disabled = currentSoloStage === 0;
         // User can only go to next stage if they've completed the current one (i.e., their saved soloStage is higher)
         soloNextStageBtn.disabled = (currentUser.soloStage <= currentSoloStage || currentSoloStage >= soloChallenges.length - 1);
-        runCodeBtn.disabled = false; // Enable run button
+        runCodeBtn.disabled = isPenalized(); // Disable run button if penalized
     }
 
     /**
@@ -4031,8 +4281,7 @@
     function previousSoloStage() {
         if (currentSoloStage > 0) {
             currentSoloStage--;
-            currentUser.soloStage = currentSoloStage; // Update currentUser and users map
-            users[currentUser.username].soloStage = currentUser.soloStage;
+            // No need to update currentUser.soloStage here, as it represents the highest completed stage
             loadSoloChallenge();
         }
     }
@@ -4044,8 +4293,7 @@
         // Allow advancing only if the user has completed the current stage
         if (currentSoloStage < currentUser.soloStage && currentSoloStage < soloChallenges.length - 1) {
             currentSoloStage++;
-            currentUser.soloStage = currentSoloStage; // Update currentUser and users map
-            users[currentUser.username].soloStage = currentUser.soloStage;
+            // No need to update currentUser.soloStage here
             loadSoloChallenge();
         } else {
             showCustomModal("Information", "Complete the current stage before moving to the next!");
@@ -4053,8 +4301,7 @@
     }
 
     /**
-     * Submits the user's C++ code for evaluation.
-     * Integrates Gemini API for actual code evaluation.
+     * Submits the user's C++ code for evaluation using Gemini API.
      */
     async function submitSoloCode() {
         const code = soloCodeEditor.value;
@@ -4068,36 +4315,40 @@
             showCustomModal('Error', 'You must be logged in to submit code.');
             return;
         }
+        if (isPenalized()) {
+            const timeLeft = Math.ceil((currentUser.penaltyEndTime - new Date()) / 1000);
+            showCustomModal("Penalty Active", `You cannot submit code while penalized. Please wait ${timeLeft} seconds.`);
+            return;
+        }
 
         soloResult.textContent = ''; // Clear previous result
         soloLoadingIndicator.style.display = 'block';
         runCodeBtn.disabled = true; // Disable button while running
         soloCodeEditor.disabled = true; // Disable editor while evaluating
 
-        // Your Gemini API Key
-        const apiKey = "AIzaSyA5NgYegSNZz95wbNtCKI9GnloXKCczQAw"; // <-- Your API Key is placed here
-
-        const prompt = `Evaluate the following C++ code for the given problem.
-        Problem: ${stageData.problem}
-        Expected Output: ${JSON.stringify(stageData.expectedOutput)}
-
-        User's Code:
-        \`\`\`cpp
-        ${code}
-        \`\`\`
-
-        Is the user's code correct and does it produce the expected output? Provide a concise "Correct!" or "Incorrect." followed by a brief explanation. If incorrect, suggest a simple fix or reason.`;
-
-        let chatHistory = [];
-        chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-
-        const payload = { contents: chatHistory };
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-        let geminiResponse = "Evaluation failed. Please try again.";
-        let isCorrect = false;
-
         try {
+            // Modified prompt to request accuracy score
+            const prompt = `You are a C++ code evaluator. Your task is to determine if the provided C++ code correctly solves the given problem and produces the exact expected output. Additionally, provide an accuracy score (0-100) based on code simplicity, efficiency, and adherence to best practices.
+
+Problem Description:
+${stageData.problem}
+
+Expected Output:
+${stageData.expectedOutput}
+
+User's C++ Code:
+\`\`\`cpp
+${code}
+\`\`\`
+
+Evaluate the code. If the code correctly solves the problem and produces the exact expected output, respond with 'CORRECT (Accuracy: [0-100])'. If it does not, respond with 'INCORRECT (Accuracy: [0-100]) - [Explanation]'. The accuracy score should reflect how well the code is written, not just if it passes tests. For example, a correct but overly complex solution might get a lower accuracy score than a correct and simple one.`;
+
+            let chatHistory = [];
+            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+            const payload = { contents: chatHistory };
+            const apiKey = ""; // Canvas will automatically provide this
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
             const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -4106,24 +4357,36 @@
 
             const result = await response.json();
 
+            let geminiResponseText = "Evaluation failed.";
+            let accuracyScore = 0;
+
             if (result.candidates && result.candidates.length > 0 &&
                 result.candidates[0].content && result.candidates[0].content.parts &&
                 result.candidates[0].content.parts.length > 0) {
-                geminiResponse = result.candidates[0].content.parts[0].text;
-                // Simple check for "Correct!" in the response to determine if it's correct
-                isCorrect = geminiResponse.toLowerCase().includes("correct!");
+                geminiResponseText = result.candidates[0].content.parts[0].text;
+
+                // Extract accuracy score using regex
+                const accuracyMatch = geminiResponseText.match(/Accuracy:\s*(\d+)/i);
+                if (accuracyMatch && accuracyMatch[1]) {
+                    accuracyScore = parseInt(accuracyMatch[1]);
+                }
             } else {
-                console.error("Gemini API response structure unexpected:", result);
-                geminiResponse = "Evaluation failed: Unexpected API response.";
+                console.error("Unexpected Gemini API response structure:", result);
+                geminiResponseText = "Error: Could not get a valid response from the AI evaluator. Please try again.";
             }
-        } catch (error) {
-            console.error("Error calling Gemini API:", error);
-            geminiResponse = `Evaluation failed due to network error or API issue: ${error.message}`;
-        } finally {
-            soloResult.textContent = geminiResponse;
+
+            soloResult.textContent = geminiResponseText;
+
+            const isCorrect = geminiResponseText.trim().toUpperCase().startsWith('CORRECT');
 
             if (isCorrect) {
-                await showCustomModal("Success", `Stage ${stageData.stage} Complete!`);
+                // Update soloStageAccuracy for the current stage
+                if (!currentUser.soloStageAccuracy[stageData.stage] || accuracyScore > currentUser.soloStageAccuracy[stageData.stage]) {
+                    currentUser.soloStageAccuracy[stageData.stage] = accuracyScore;
+                    users[currentUser.username].soloStageAccuracy = { ...currentUser.soloStageAccuracy }; // Ensure reactivity/update
+                }
+
+                await showCustomModal("Success", `Stage ${stageData.stage} Complete! Accuracy: ${accuracyScore}%`);
                 // Only advance soloStage if they completed the current highest stage
                 if (currentUser.soloStage === stageData.stage) {
                     currentUser.soloStage++; // Advance user's overall progress
@@ -4138,7 +4401,7 @@
                     // Update the welcome message in the header to reflect new ELO and tokens
                     welcomeMessage.textContent = `Logged in as: ${currentUser.username} (ID: ${currentUser.id}) ELO: ${currentUser.elo} Tokens: ${currentUser.tokens}`;
                 } else {
-                    await showCustomModal("Information", "You already completed this stage before!");
+                    await showCustomModal("Information", "You already completed this stage before! Try to improve your accuracy.");
                 }
                 // Automatically load next stage if successful (and if there is one)
                 loadSoloChallenge();
@@ -4146,8 +4409,13 @@
                 await showCustomModal("Try Again", "Your code needs some adjustments. Check the evaluation for hints.");
             }
 
+        } catch (error) {
+            console.error("Error calling Gemini API:", error);
+            soloResult.textContent = `An error occurred during evaluation: ${error.message}. Please try again.`;
+            await showCustomModal("Evaluation Error", "Failed to evaluate code. Please check your internet connection and try again.");
+        } finally {
             soloLoadingIndicator.style.display = 'none';
-            runCodeBtn.disabled = false; // Re-enable button
+            runCodeBtn.disabled = isPenalized(); // Re-enable button, but disable if penalized
             soloCodeEditor.disabled = false; // Re-enable editor
             // Re-evaluate next stage button state
             soloNextStageBtn.disabled = (currentUser.soloStage <= currentSoloStage || currentSoloStage >= soloChallenges.length - 1);
@@ -4155,23 +4423,37 @@
     }
 
     // --- Chat Functions (In-Memory per Lobby) ---
+
+    /**
+     * Censors profanity in a given text string.
+     * @param {string} text The input text.
+     * @returns {string} The text with profanity censored.
+     */
+    function censorProfanity(text) {
+        let censoredText = text;
+        profanityList.forEach(word => {
+            const regex = new RegExp(`\\b${word}\\b`, 'gi'); // Whole word, case-insensitive
+            censoredText = censoredText.replace(regex, '****');
+        });
+        return censoredText;
+    }
+
     /**
      * Sends a chat message within the current lobby.
-     * @param {string} chatType The type of chat ('general', '4v4', or '1v1') to determine which chat input/display to use.
+     * @param {string} chatType The type of chat ('4v4' or '1v1') to determine which chat input/display to use.
+     * @param {string} [messageContent] The message content (text or image URL).
+     * @param {boolean} [isSticker=false] True if the message is a sticker/image.
      */
-    async function sendMessage(chatType) {
+    async function sendMessage(chatType, messageContent = null, isSticker = false) {
         let chatInput;
-        let chatMessagesDiv;
         let messagesArray;
 
         if (chatType === '4v4') {
             chatInput = chatInput4v4;
-            chatMessagesDiv = chatMessages4v4Div;
             const lobby = activeLobbies[currentLobbyId];
             messagesArray = lobby ? lobby.chatMessages : [];
         } else if (chatType === '1v1') {
             chatInput = chatInput1v1;
-            chatMessagesDiv = chatMessages1v1Div;
             const lobby = activeLobbies[currentLobbyId];
             messagesArray = lobby ? lobby.chatMessages : [];
         } else {
@@ -4190,18 +4472,24 @@
             return;
         }
 
-        const messageText = chatInput.value.trim();
-
-        if (messageText === '') {
-            return;
+        let contentToSend;
+        if (isSticker) {
+            contentToSend = messageContent; // Use the provided URL directly
+        } else {
+            const messageText = chatInput.value.trim();
+            if (messageText === '') {
+                return;
+            }
+            contentToSend = censorProfanity(messageText); // Censor profanity for text messages
         }
 
         // Add message to the correct in-memory array
         messagesArray.push({
             senderId: currentUser.id,
             senderName: currentUser.username,
-            message: messageText,
-            timestamp: new Date()
+            message: contentToSend,
+            timestamp: new Date(),
+            isSticker: isSticker
         });
         chatInput.value = ''; // Clear input field
 
@@ -4233,12 +4521,90 @@
 
         messages.forEach(msg => {
             const msgElement = document.createElement('p');
+            msgElement.className = 'chat-message';
             const timestamp = msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            msgElement.innerHTML = `<strong>[${timestamp}] ${msg.senderName}:</strong> ${msg.message}`;
+
+            if (msg.isSticker) {
+                msgElement.innerHTML = `<strong>[${timestamp}] ${msg.senderName}:</strong> <img src="${msg.message}" class="sticker">`;
+            } else {
+                msgElement.innerHTML = `<strong>[${timestamp}] ${msg.senderName}:</strong> ${msg.message}`;
+            }
             chatMessagesDiv.appendChild(msgElement);
         });
         chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight; // Scroll to bottom
     }
+
+    /**
+     * Sets up sticker and image sending features for a given chat box.
+     * @param {string} chatType '4v4' or '1v1'.
+     */
+    function setupStickerFeatures(chatType) {
+        const toggleBtn = document.getElementById(`toggleStickerPanelBtn${chatType}`);
+        const stickerPanel = document.getElementById(`stickerPanel${chatType}`);
+        const stickerFile = document.getElementById(`stickerFileInput${chatType}`);
+
+        // Preset stickers (example images - replace with actual sticker URLs if available)
+        const presetStickers = [
+            'https://placehold.co/60x60/FF5733/FFFFFF?text=S1',
+            'https://placehold.co/60x60/33FF57/FFFFFF?text=S2',
+            'https://placehold.co/60x60/3357FF/FFFFFF?text=S3',
+            'https://placehold.co/60x60/FF33FF/FFFFFF?text=S4',
+            'https://placehold.co/60x60/FFFF33/000000?text=S5',
+            'https://placehold.co/60x60/33FFFF/000000?text=S6'
+        ];
+
+        // Function to add a sticker image to the panel
+        function addStickerToPanel(src) {
+            const img = document.createElement('img');
+            img.src = src;
+            img.alt = 'sticker';
+            img.onclick = () => {
+                sendMessage(chatType, src, true); // Send as sticker
+                stickerPanel.style.display = 'none'; // Hide panel after sending
+            };
+            stickerPanel.appendChild(img);
+        }
+
+        // Load preset stickers
+        presetStickers.forEach(src => addStickerToPanel(src));
+
+        // Toggle sticker panel visibility
+        toggleBtn.onclick = () => {
+            stickerPanel.style.display = stickerPanel.style.display === 'flex' ? 'none' : 'flex';
+        };
+
+        // Handle file input change (for uploading images)
+        stickerFile.onchange = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            // Basic file type validation
+            if (!file.type.startsWith('image/')) {
+                showCustomModal("Invalid File Type", "Please upload an image file (e.g., JPG, PNG, GIF).");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const imageUrl = event.target.result;
+                // Add to panel only if it's a new image not already there (optional, for persistent user stickers)
+                // For now, just send it and hide panel.
+                sendMessage(chatType, imageUrl, true); // Send as image
+                stickerPanel.style.display = 'none'; // Hide panel after sending
+            };
+            reader.readAsDataURL(file); // Read file as base64 data URL
+        };
+
+        // Add a button to trigger the file input
+        const addImageBtn = document.createElement('button');
+        addImageBtn.textContent = 'Upload Image';
+        addImageBtn.className = 'primary-btn'; // Reusing primary-btn style
+        addImageBtn.style.marginLeft = '5px';
+        addImageBtn.onclick = () => stickerFile.click();
+        // Append this button next to the toggle sticker button in the chat input area
+        toggleBtn.parentNode.insertBefore(addImageBtn, toggleBtn.nextSibling);
+    }
+
 
     // --- Profile Page Functions ---
     /**
@@ -4264,8 +4630,8 @@
         profileRankedElo.textContent = currentUser.elo;
         profileCasualPoints.textContent = currentUser.casualPoints;
 
-        const rankedAccuracy = currentUser.rankedTotalAnswers > 0 ? ((currentUser.rankedCorrectAnswers / currentUser.rankedTotalAnswers) * 100) : 0;
-        profileRankedAccuracy.textContent = `${rankedAccuracy.toFixed(0)}%`;
+        const rankedAccuracy = currentUser.rankedTotalAnswers > 0 ? ((currentUser.rankedCorrectAnswers / currentUser.rankedTotalAnswers) * 100).toFixed(0) : 0;
+        profileRankedAccuracy.textContent = `${rankedAccuracy}%`;
 
         const casualAccuracy = currentUser.casualTotalAnswers > 0 ? ((currentUser.casualCorrectAnswers / currentUser.casualTotalAnswers) * 100).toFixed(0) : 0;
         profileCasualAccuracy.textContent = `${casualAccuracy}%`;
@@ -4274,20 +4640,15 @@
         profileTokens.textContent = currentUser.tokens;
         profileEquippedTitle.textContent = currentUser.equippedTitle;
 
-        // Determine and display rank based on ranked accuracy
-        let rank = 'D'; // Default rank for new players or if accuracy is 0%
-        if (rankedAccuracy >= 96) {
-            rank = 'S';
-        } else if (rankedAccuracy >= 86) {
-            rank = 'A';
-        } else if (rankedAccuracy >= 76) {
-            rank = 'B';
-        } else if (rankedAccuracy >= 65) {
-            rank = 'C';
-        } else if (rankedAccuracy < 50 && currentUser.rankedTotalAnswers > 0) { // Only 'Garbage' if there are actual answers
-            rank = 'Garbage';
+        // Calculate average solo accuracy
+        let totalSoloAccuracy = 0;
+        let completedSoloStages = 0;
+        for (const stage in currentUser.soloStageAccuracy) {
+            totalSoloAccuracy += currentUser.soloStageAccuracy[stage];
+            completedSoloStages++;
         }
-        profileRankDisplay.textContent = rank;
+        const avgSoloAccuracy = completedSoloStages > 0 ? (totalSoloAccuracy / completedSoloStages).toFixed(0) : 0;
+        profileSoloAvgAccuracy.textContent = `${avgSoloAccuracy}%`;
 
 
         // Render owned cosmetics in profile
@@ -4565,18 +4926,6 @@
     }
 
     /**
-     * Distributes a specified number of random ability cards to a player.
-     * @param {Object} player The player object to give cards to.
-     * @param {number} count The number of cards to distribute.
-     */
-    function distributeInitialCards(player, count) {
-        for (let i = 0; i < count; i++) {
-            const randomCard = abilityCards[Math.floor(Math.random() * abilityCards.length)];
-            player.cards.push({ id: randomCard.id, name: randomCard.name });
-        }
-    }
-
-    /**
      * Activates a selected ability card.
      * @param {string} cardId The ID of the card to activate.
      * @param {number} cardIndex The index of the card in the player's hand.
@@ -4726,6 +5075,139 @@
         await showCustomModal("Evolved Meta Vision Activated!", "You will receive a clue for the next question!");
     }
 
+    // --- Inactivity Penalty Logic ---
+
+    /**
+     * Checks if the user is currently under a penalty.
+     * @returns {boolean} True if penalized, false otherwise.
+     */
+    function isPenalized() {
+        if (!currentUser || !currentUser.penaltyEndTime) {
+            return false;
+        }
+        return new Date() < currentUser.penaltyEndTime;
+    }
+
+    /**
+     * Applies a penalty to the current user.
+     */
+    async function applyPenalty() {
+        if (!currentUser) return;
+
+        currentUser.warningCount = 0; // Reset warnings after penalty
+        currentUser.penaltyEndTime = new Date(Date.now() + PENALTY_DURATION_MS);
+        users[currentUser.username].warningCount = 0;
+        users[currentUser.username].penaltyEndTime = currentUser.penaltyEndTime.toISOString(); // Store as string for consistency
+
+        // Kick user out of current game/solo challenge if active
+        // Check if currently in a game (multiplayer or solo challenge)
+        const inActiveGame = (currentLobbyId && activeLobbies[currentLobbyId] && activeLobbies[currentLobbyId].gameStarted) ||
+                             (soloChallengeUI.style.display === 'flex');
+
+        if (inActiveGame) {
+            await showCustomModal("Penalty!", "You have been kicked from the match due to inactivity! You are penalized for 1 minute.");
+            if (currentLobbyId && activeLobbies[currentLobbyId] && activeLobbies[currentLobbyId].gameStarted) {
+                leaveGame(true); // Force leave game due to penalty
+            } else if (soloChallengeUI.style.display === 'flex') {
+                leaveSoloChallenge(true); // Force leave solo challenge due to penalty
+            }
+        } else {
+            await showCustomModal("Penalty!", "You are penalized for 1 minute due to inactivity.");
+        }
+
+        // Disable relevant buttons immediately
+        updatePenaltyButtonStates();
+        // Start a timer to re-enable buttons after penalty
+        const penaltyCheckInterval = setInterval(() => {
+            if (!isPenalized()) {
+                clearInterval(penaltyCheckInterval);
+                updatePenaltyButtonStates(); // Re-enable buttons
+                showCustomModal("Penalty Over!", "Your penalty has ended. You can now join or start matches.");
+            }
+        }, 1000);
+    }
+
+    /**
+     * Updates the disabled state of buttons based on penalty status.
+     */
+    function updatePenaltyButtonStates() {
+        const penalized = isPenalized();
+
+        // Lobby creation and joining
+        createNewLobbyBtn.disabled = penalized;
+        document.querySelectorAll('.join-btn').forEach(btn => {
+            // Only disable if not already disabled by full/in-game status
+            const lobbyId = btn.dataset.lobbyId;
+            const lobby = activeLobbies[lobbyId];
+            if (lobby && (lobby.players.length >= lobby.maxPlayers || lobby.gameStarted)) {
+                // Keep existing disabled state if lobby is full or in game
+            } else {
+                btn.disabled = penalized;
+            }
+        });
+
+        // Game start button
+        updateStartGameButtonState(); // This function already checks isPenalized()
+
+        // Solo challenge run button
+        if (runCodeBtn) {
+            runCodeBtn.disabled = penalized;
+        }
+
+        // Game mode selection buttons (for starting new games)
+        casualModeBtn.disabled = penalized;
+        rankedModeBtn.disabled = penalized;
+        customModeBtn.disabled = penalized;
+
+        // Update titles for disabled buttons
+        if (penalized) {
+            const timeLeft = Math.ceil((currentUser.penaltyEndTime - new Date()) / 1000);
+            const penaltyMessage = `You are penalized. Cannot perform this action for ${timeLeft} seconds.`;
+            casualModeBtn.title = penaltyMessage;
+            rankedModeBtn.title = penaltyMessage;
+            customModeBtn.title = penaltyMessage;
+            createNewLobbyBtn.title = penaltyMessage;
+            if (runCodeBtn) runCodeBtn.title = penaltyMessage;
+        } else {
+            casualModeBtn.title = '';
+            rankedModeBtn.title = '';
+            customModeBtn.title = '';
+            createNewLobbyBtn.title = '';
+            if (runCodeBtn) runCodeBtn.title = '';
+        }
+    }
+
+    /**
+     * Checks for existing penalty and applies UI changes on load/login.
+     */
+    function checkAndApplyPenalty() {
+        if (currentUser && currentUser.penaltyEndTime) {
+            if (new Date() < new Date(currentUser.penaltyEndTime)) {
+                // Penalty is still active
+                updatePenaltyButtonStates();
+                const timeLeft = Math.ceil((new Date(currentUser.penaltyEndTime) - new Date()) / 1000);
+                showCustomModal("Penalty Active", `You are currently penalized. You cannot join or start a match for ${timeLeft} seconds.`);
+                const penaltyCheckInterval = setInterval(() => {
+                    if (!isPenalized()) {
+                        clearInterval(penaltyCheckInterval);
+                        updatePenaltyButtonStates();
+                        showCustomModal("Penalty Over!", "Your penalty has ended. You can now join or start matches.");
+                    }
+                }, 1000);
+            } else {
+                // Penalty has expired, clear it
+                currentUser.penaltyEndTime = null;
+                currentUser.warningCount = 0;
+                users[currentUser.username].penaltyEndTime = null;
+                users[currentUser.username].warningCount = 0;
+                updatePenaltyButtonStates(); // Re-enable buttons
+            }
+        } else {
+            // No penalty, ensure buttons are enabled
+            updatePenaltyButtonStates();
+        }
+    }
+
 
     // --- Event Listeners ---
     document.addEventListener('DOMContentLoaded', () => {
@@ -4808,6 +5290,10 @@
             if (e.key === 'Enter') sendMessage('1v1');
         });
 
+        // Setup sticker features for both chat boxes
+        setupStickerFeatures('4v4');
+        setupStickerFeatures('1v1');
+
         // Code Input Modal buttons
         redeemCodeBtn.addEventListener('click', redeemCode);
         cancelCodeBtn.addEventListener('click', closeCodeInputModal);
@@ -4826,6 +5312,47 @@
             // Allow new lines in textarea, only submit on Ctrl+Enter or similar if desired
             // For now, no auto-submit on Enter for code editor
         });
+
+        // Inactivity detection event listeners
+        document.addEventListener('visibilitychange', () => {
+            // Check if currently in a game (multiplayer or solo challenge)
+            const inActiveGame = (currentLobbyId && activeLobbies[currentLobbyId] && activeLobbies[currentLobbyId].gameStarted) ||
+                                 (soloChallengeUI.style.display === 'flex');
+
+            if (document.hidden) {
+                // Page is hidden
+                isPageActive = false;
+                lastActivityTime = new Date(); // Record time when page became hidden
+
+                if (inActiveGame) { // Only start inactivity timer if in an active game
+                    inactiveTimer = setTimeout(async () => {
+                        if (!isPageActive && currentUser && inActiveGame) { // Double check if still inactive and user is logged in and in game
+                            currentUser.warningCount = (currentUser.warningCount || 0) + 1;
+                            users[currentUser.username].warningCount = currentUser.warningCount; // Update in-memory
+                            if (currentUser.warningCount >= MAX_WARNINGS) {
+                                await applyPenalty();
+                            } else {
+                                await showCustomModal("Warning!", `You were inactive for more than 3 seconds. You have ${currentUser.warningCount} warning(s). ${MAX_WARNINGS} warnings will result in a penalty.`);
+                            }
+                        }
+                    }, INACTIVITY_WARNING_THRESHOLD_MS);
+                }
+            } else {
+                // Page is visible
+                isPageActive = true;
+                if (inactiveTimer) {
+                    clearTimeout(inactiveTimer);
+                    inactiveTimer = null;
+                }
+                // If the user returns and a warning was already triggered (meaning they were gone for >3s)
+                // The warning modal would have been shown by the setTimeout, so no need to re-show here.
+            }
+        });
+
+        // Reset activity time on user interaction
+        document.addEventListener('mousemove', () => { lastActivityTime = new Date(); });
+        document.addEventListener('keydown', () => { lastActivityTime = new Date(); });
+        document.addEventListener('click', () => { lastActivityTime = new Date(); });
     });
 
     // Initial check when the page loads
