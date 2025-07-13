@@ -5338,28 +5338,21 @@ Evaluate the code. If the code correctly solves the problem and produces the exa
                     }, INACTIVITY_WARNING_THRESHOLD_MS);
                 }
             } else {
-                // Page is visible
                 isPageActive = true;
                 if (inactiveTimer) {
                     clearTimeout(inactiveTimer);
                     inactiveTimer = null;
                 }
-                // If the user returns and a warning was already triggered (meaning they were gone for >3s)
-                // The warning modal would have been shown by the setTimeout, so no need to re-show here.
             }
         });
 
-        // Reset activity time on user interaction
         document.addEventListener('mousemove', () => { lastActivityTime = new Date(); });
         document.addEventListener('keydown', () => { lastActivityTime = new Date(); });
         document.addEventListener('click', () => { lastActivityTime = new Date(); });
     });
 
-    // Initial check when the page loads
     window.onload = function() {
-        // Initial UI state: show auth container
         showSection(authContainer);
-        // Request global leaderboard data on load (now uses local data)
         updateGlobalLeaderboard();
     };
 </script>
